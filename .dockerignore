@@ -1,0 +1,15 @@
+.git
+.gitignore
+.env
+nginx/certs/
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+backend/tests/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+*.log
+README.md
+scripts/

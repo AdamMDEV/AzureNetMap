@@ -1,0 +1,639 @@
+[
+  {
+    "ColumnName": "TenantId",
+    "ColumnOrdinal": "0",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "TimeGenerated",
+    "ColumnOrdinal": "1",
+    "ColumnType": "datetime",
+    "DataType": "System.DateTime",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "SubType",
+    "ColumnOrdinal": "2",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "FaSchemaVersion",
+    "ColumnOrdinal": "3",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "TimeProcessed",
+    "ColumnOrdinal": "4",
+    "ColumnType": "datetime",
+    "DataType": "System.DateTime",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "FlowIntervalStartTime",
+    "ColumnOrdinal": "5",
+    "ColumnType": "datetime",
+    "DataType": "System.DateTime",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "FlowIntervalEndTime",
+    "ColumnOrdinal": "6",
+    "ColumnType": "datetime",
+    "DataType": "System.DateTime",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "FlowType",
+    "ColumnOrdinal": "7",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "FlowStartTime",
+    "ColumnOrdinal": "8",
+    "ColumnType": "datetime",
+    "DataType": "System.DateTime",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "FlowEndTime",
+    "ColumnOrdinal": "9",
+    "ColumnType": "datetime",
+    "DataType": "System.DateTime",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "SrcIp",
+    "ColumnOrdinal": "10",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "DestIp",
+    "ColumnOrdinal": "11",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "SrcPorts",
+    "ColumnOrdinal": "12",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "DestPort",
+    "ColumnOrdinal": "13",
+    "ColumnType": "int",
+    "DataType": "System.Int32",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "L4Protocol",
+    "ColumnOrdinal": "14",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "L7Protocol",
+    "ColumnOrdinal": "15",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "IsFlowCapturedAtUdrHop",
+    "ColumnOrdinal": "16",
+    "ColumnType": "bool",
+    "DataType": "System.SByte",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "FlowDirection",
+    "ColumnOrdinal": "17",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "FlowStatus",
+    "ColumnOrdinal": "18",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "NsgList",
+    "ColumnOrdinal": "19",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "NsgRule",
+    "ColumnOrdinal": "20",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "NsgRuleType",
+    "ColumnOrdinal": "21",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "MacAddress",
+    "ColumnOrdinal": "22",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "TargetResourceId",
+    "ColumnOrdinal": "23",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "TargetResourceType",
+    "ColumnOrdinal": "24",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "FlowLogResourceId",
+    "ColumnOrdinal": "25",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "SrcSubscription",
+    "ColumnOrdinal": "26",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "DestSubscription",
+    "ColumnOrdinal": "27",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "SrcRegion",
+    "ColumnOrdinal": "28",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "DestRegion",
+    "ColumnOrdinal": "29",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "SrcNic",
+    "ColumnOrdinal": "30",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "DestNic",
+    "ColumnOrdinal": "31",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "SrcVm",
+    "ColumnOrdinal": "32",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "DestVm",
+    "ColumnOrdinal": "33",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "SrcSubnet",
+    "ColumnOrdinal": "34",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "DestSubnet",
+    "ColumnOrdinal": "35",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "SrcApplicationGateway",
+    "ColumnOrdinal": "36",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "DestApplicationGateway",
+    "ColumnOrdinal": "37",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "SrcLoadBalancer",
+    "ColumnOrdinal": "38",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "DestLoadBalancer",
+    "ColumnOrdinal": "39",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "SrcLocalNetworkGateway",
+    "ColumnOrdinal": "40",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "DestLocalNetworkGateway",
+    "ColumnOrdinal": "41",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "SrcExpressRouteCircuit",
+    "ColumnOrdinal": "42",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "DestExpressRouteCircuit",
+    "ColumnOrdinal": "43",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "ExpressRouteCircuitPeeringType",
+    "ColumnOrdinal": "44",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "ConnectionType",
+    "ColumnOrdinal": "45",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "ConnectionName",
+    "ColumnOrdinal": "46",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "ConnectingVnets",
+    "ColumnOrdinal": "47",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "Country",
+    "ColumnOrdinal": "48",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "AzureRegion",
+    "ColumnOrdinal": "49",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "FlowEncryption",
+    "ColumnOrdinal": "50",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "AllowedInFlows",
+    "ColumnOrdinal": "51",
+    "ColumnType": "long",
+    "DataType": "System.Int64",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "DeniedInFlows",
+    "ColumnOrdinal": "52",
+    "ColumnType": "long",
+    "DataType": "System.Int64",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "AllowedOutFlows",
+    "ColumnOrdinal": "53",
+    "ColumnType": "long",
+    "DataType": "System.Int64",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "DeniedOutFlows",
+    "ColumnOrdinal": "54",
+    "ColumnType": "long",
+    "DataType": "System.Int64",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "PacketsDestToSrc",
+    "ColumnOrdinal": "55",
+    "ColumnType": "long",
+    "DataType": "System.Int64",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "PacketsSrcToDest",
+    "ColumnOrdinal": "56",
+    "ColumnType": "long",
+    "DataType": "System.Int64",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "BytesDestToSrc",
+    "ColumnOrdinal": "57",
+    "ColumnType": "long",
+    "DataType": "System.Int64",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "BytesSrcToDest",
+    "ColumnOrdinal": "58",
+    "ColumnType": "long",
+    "DataType": "System.Int64",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "CompletedFlows",
+    "ColumnOrdinal": "59",
+    "ColumnType": "long",
+    "DataType": "System.Int64",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "SrcPublicIps",
+    "ColumnOrdinal": "60",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "DestPublicIps",
+    "ColumnOrdinal": "61",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "AclGroup",
+    "ColumnOrdinal": "62",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "AclRule",
+    "ColumnOrdinal": "63",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "Status",
+    "ColumnOrdinal": "64",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "PrivateEndpointResourceId",
+    "ColumnOrdinal": "65",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "PrivateLinkResourceId",
+    "ColumnOrdinal": "66",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "PrivateLinkResourceName",
+    "ColumnOrdinal": "67",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "SrcServiceId",
+    "ColumnOrdinal": "68",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "DestServiceId",
+    "ColumnOrdinal": "69",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "SrcServiceName",
+    "ColumnOrdinal": "70",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "DestServiceName",
+    "ColumnOrdinal": "71",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "SrcTenantId",
+    "ColumnOrdinal": "72",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "DestTenantId",
+    "ColumnOrdinal": "73",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "SrcTenantName",
+    "ColumnOrdinal": "74",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "DestTenantName",
+    "ColumnOrdinal": "75",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "SrcEnvironment",
+    "ColumnOrdinal": "76",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "DestEnvironment",
+    "ColumnOrdinal": "77",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "SrcCloud",
+    "ColumnOrdinal": "78",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "DestCloud",
+    "ColumnOrdinal": "79",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "SrcNetworkGroups",
+    "ColumnOrdinal": "80",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "DestNetworkGroups",
+    "ColumnOrdinal": "81",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "SrcServiceTags",
+    "ColumnOrdinal": "82",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "DestServiceTags",
+    "ColumnOrdinal": "83",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "LogResourceId",
+    "ColumnOrdinal": "84",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "Action",
+    "ColumnOrdinal": "85",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "Description",
+    "ColumnOrdinal": "86",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "TrafficAnalyticsResourceId",
+    "ColumnOrdinal": "87",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "RecordCount",
+    "ColumnOrdinal": "88",
+    "ColumnType": "long",
+    "DataType": "System.Int64",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "SourceSystem",
+    "ColumnOrdinal": "89",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "Type",
+    "ColumnOrdinal": "90",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  }
+]

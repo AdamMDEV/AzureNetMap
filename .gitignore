@@ -1,0 +1,12 @@
+.env
+nginx/certs/
+node_modules/
+__pycache__/
+*.pyc
+dist/
+.venv/
+frontend/dist/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+*.log

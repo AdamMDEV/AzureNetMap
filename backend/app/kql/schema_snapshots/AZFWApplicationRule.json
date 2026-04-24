@@ -1,0 +1,142 @@
+[
+  {
+    "ColumnName": "TenantId",
+    "ColumnOrdinal": "0",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "TimeGenerated",
+    "ColumnOrdinal": "1",
+    "ColumnType": "datetime",
+    "DataType": "System.DateTime",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "Protocol",
+    "ColumnOrdinal": "2",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "SourceIp",
+    "ColumnOrdinal": "3",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "SourcePort",
+    "ColumnOrdinal": "4",
+    "ColumnType": "int",
+    "DataType": "System.Int32",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "DestinationPort",
+    "ColumnOrdinal": "5",
+    "ColumnType": "int",
+    "DataType": "System.Int32",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "Fqdn",
+    "ColumnOrdinal": "6",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "TargetUrl",
+    "ColumnOrdinal": "7",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "Action",
+    "ColumnOrdinal": "8",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "Policy",
+    "ColumnOrdinal": "9",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "RuleCollectionGroup",
+    "ColumnOrdinal": "10",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "RuleCollection",
+    "ColumnOrdinal": "11",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "Rule",
+    "ColumnOrdinal": "12",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "ActionReason",
+    "ColumnOrdinal": "13",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "IsTlsInspected",
+    "ColumnOrdinal": "14",
+    "ColumnType": "bool",
+    "DataType": "System.SByte",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "WebCategory",
+    "ColumnOrdinal": "15",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "IsExplicitProxyRequest",
+    "ColumnOrdinal": "16",
+    "ColumnType": "bool",
+    "DataType": "System.SByte",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "SourceSystem",
+    "ColumnOrdinal": "17",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "Type",
+    "ColumnOrdinal": "18",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "_ResourceId",
+    "ColumnOrdinal": "19",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  }
+]

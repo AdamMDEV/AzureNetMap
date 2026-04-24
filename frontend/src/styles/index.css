@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #0f172a;
+  color: #e2e8f0;
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
+}
+
+.cy-container {
+  width: 100%;
+  height: 100%;
+}
+
+.tippy-box[data-theme~='netmap'] {
+  background-color: #1e293b;
+  color: #e2e8f0;
+  border: 1px solid #334155;
+  font-size: 0.75rem;
+  max-width: 320px;
+}
+
+.tippy-box[data-theme~='netmap'][data-placement^='top'] > .tippy-arrow::before {
+  border-top-color: #334155;
+}
+
+.tippy-box[data-theme~='netmap'][data-placement^='bottom'] > .tippy-arrow::before {
+  border-bottom-color: #334155;
+}

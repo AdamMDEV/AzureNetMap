@@ -1,0 +1,121 @@
+[
+  {
+    "ColumnName": "TenantId",
+    "ColumnOrdinal": "0",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "TimeGenerated",
+    "ColumnOrdinal": "1",
+    "ColumnType": "datetime",
+    "DataType": "System.DateTime",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "SubType",
+    "ColumnOrdinal": "2",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "FaSchemaVersion",
+    "ColumnOrdinal": "3",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "FlowIntervalStartTime",
+    "ColumnOrdinal": "4",
+    "ColumnType": "datetime",
+    "DataType": "System.DateTime",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "FlowIntervalEndTime",
+    "ColumnOrdinal": "5",
+    "ColumnType": "datetime",
+    "DataType": "System.DateTime",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "FlowType",
+    "ColumnOrdinal": "6",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "Ip",
+    "ColumnOrdinal": "7",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "PublicIpDetails",
+    "ColumnOrdinal": "8",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "ThreatType",
+    "ColumnOrdinal": "9",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "DnsDomain",
+    "ColumnOrdinal": "10",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "ThreatDescription",
+    "ColumnOrdinal": "11",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "Location",
+    "ColumnOrdinal": "12",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "Url",
+    "ColumnOrdinal": "13",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "Port",
+    "ColumnOrdinal": "14",
+    "ColumnType": "int",
+    "DataType": "System.Int32",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "SourceSystem",
+    "ColumnOrdinal": "15",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "Type",
+    "ColumnOrdinal": "16",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  }
+]

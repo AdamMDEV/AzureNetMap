@@ -1,0 +1,821 @@
+[
+  {
+    "ColumnName": "TenantId",
+    "ColumnOrdinal": "0",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "TimeGenerated",
+    "ColumnOrdinal": "1",
+    "ColumnType": "datetime",
+    "DataType": "System.DateTime",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "SubType",
+    "ColumnOrdinal": "2",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "TimeProcessed",
+    "ColumnOrdinal": "3",
+    "ColumnType": "datetime",
+    "DataType": "System.DateTime",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "TopologyVersion",
+    "ColumnOrdinal": "4",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "SchemaVersion",
+    "ColumnOrdinal": "5",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "MacAddress",
+    "ColumnOrdinal": "6",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "Name",
+    "ColumnOrdinal": "7",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "Region",
+    "ColumnOrdinal": "8",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "AzureResourceType",
+    "ColumnOrdinal": "9",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "Subscription",
+    "ColumnOrdinal": "10",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "SubscriptionName",
+    "ColumnOrdinal": "11",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "DiscoveryRegion",
+    "ColumnOrdinal": "12",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "Tags",
+    "ColumnOrdinal": "13",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "AddressPrefixes",
+    "ColumnOrdinal": "14",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "Nsg",
+    "ColumnOrdinal": "15",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "RouteTable",
+    "ColumnOrdinal": "16",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "GatewayType",
+    "ColumnOrdinal": "17",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "VirtualSubnetwork",
+    "ColumnOrdinal": "18",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "VipAddress",
+    "ColumnOrdinal": "19",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "Sku",
+    "ColumnOrdinal": "20",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "BgpEnabled",
+    "ColumnOrdinal": "21",
+    "ColumnType": "bool",
+    "DataType": "System.SByte",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "VpnClientAddressPrefixes",
+    "ColumnOrdinal": "22",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "IpAddress",
+    "ColumnOrdinal": "23",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "SubnetPrefixes",
+    "ColumnOrdinal": "24",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "IsVirtualAppliance",
+    "ColumnOrdinal": "25",
+    "ColumnType": "bool",
+    "DataType": "System.SByte",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "VmssName",
+    "ColumnOrdinal": "26",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "Zones",
+    "ColumnOrdinal": "27",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "Priority",
+    "ColumnOrdinal": "28",
+    "ColumnType": "int",
+    "DataType": "System.Int32",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "VirtualMachine",
+    "ColumnOrdinal": "29",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "PrivateIpAddresses",
+    "ColumnOrdinal": "30",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "PublicIpAddresses",
+    "ColumnOrdinal": "31",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "Subnetwork",
+    "ColumnOrdinal": "32",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "EnableIpForwarding",
+    "ColumnOrdinal": "33",
+    "ColumnType": "bool",
+    "DataType": "System.SByte",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "LoadBalancerBackendPools",
+    "ColumnOrdinal": "34",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "ApplicationGatewayBackendPools",
+    "ColumnOrdinal": "35",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "IsFlowEnabled",
+    "ColumnOrdinal": "36",
+    "ColumnType": "bool",
+    "DataType": "System.SByte",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "FlowLogStorageAccount",
+    "ColumnOrdinal": "37",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "Description",
+    "ColumnOrdinal": "38",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "Protocol",
+    "ColumnOrdinal": "39",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "SourcePortRange",
+    "ColumnOrdinal": "40",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "DestinationPortRange",
+    "ColumnOrdinal": "41",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "SourceAddressPrefix",
+    "ColumnOrdinal": "42",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "DestinationAddressPrefix",
+    "ColumnOrdinal": "43",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "Access",
+    "ColumnOrdinal": "44",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "Direction",
+    "ColumnOrdinal": "45",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "RuleType",
+    "ColumnOrdinal": "46",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "NextHopType",
+    "ColumnOrdinal": "47",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "NextHopIp",
+    "ColumnOrdinal": "48",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "VirtualNetworkGateway1",
+    "ColumnOrdinal": "49",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "VirtualNetworkGateway2",
+    "ColumnOrdinal": "50",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "LocalNetworkGateway",
+    "ColumnOrdinal": "51",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "Peer",
+    "ColumnOrdinal": "52",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "GatewayConnectionType",
+    "ColumnOrdinal": "53",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "ConnectionType",
+    "ColumnOrdinal": "54",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "ConnectionStatus",
+    "ColumnOrdinal": "55",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "RoutingWeight",
+    "ColumnOrdinal": "56",
+    "ColumnType": "int",
+    "DataType": "System.Int32",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "IngressBytesTransferred",
+    "ColumnOrdinal": "57",
+    "ColumnType": "long",
+    "DataType": "System.Int64",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "EgressBytesTransferred",
+    "ColumnOrdinal": "58",
+    "ColumnType": "long",
+    "DataType": "System.Int64",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "VirtualNetwork1",
+    "ColumnOrdinal": "59",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "VirtualNetwork2",
+    "ColumnOrdinal": "60",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "AllowVirtualNetworkAccess",
+    "ColumnOrdinal": "61",
+    "ColumnType": "bool",
+    "DataType": "System.SByte",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "AllowForwardedTraffic",
+    "ColumnOrdinal": "62",
+    "ColumnType": "bool",
+    "DataType": "System.SByte",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "AllowGatewayTransit",
+    "ColumnOrdinal": "63",
+    "ColumnType": "bool",
+    "DataType": "System.SByte",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "UseRemoteGateways",
+    "ColumnOrdinal": "64",
+    "ColumnType": "bool",
+    "DataType": "System.SByte",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "LoadBalancerType",
+    "ColumnOrdinal": "65",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "FrontendSubnet",
+    "ColumnOrdinal": "66",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "FrontendSubnets",
+    "ColumnOrdinal": "67",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "FrontendIps",
+    "ColumnOrdinal": "68",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "BackendSubnets",
+    "ColumnOrdinal": "69",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "AppGatewayType",
+    "ColumnOrdinal": "70",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "PrivateFrontendIps",
+    "ColumnOrdinal": "71",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "PublicFrontendIps",
+    "ColumnOrdinal": "72",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "GatewaySubnet",
+    "ColumnOrdinal": "73",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "VirtualAppliances",
+    "ColumnOrdinal": "74",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "Subnet1",
+    "ColumnOrdinal": "75",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "Subnet2",
+    "ColumnOrdinal": "76",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "SubnetRegion1",
+    "ColumnOrdinal": "77",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "SubnetRegion2",
+    "ColumnOrdinal": "78",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "FrontendIpAddress",
+    "ColumnOrdinal": "79",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "BackendIpAddress",
+    "ColumnOrdinal": "80",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "FrontendPort",
+    "ColumnOrdinal": "81",
+    "ColumnType": "int",
+    "DataType": "System.Int32",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "BackendPort",
+    "ColumnOrdinal": "82",
+    "ColumnType": "int",
+    "DataType": "System.Int32",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "FloatingIpEnabled",
+    "ColumnOrdinal": "83",
+    "ColumnType": "bool",
+    "DataType": "System.SByte",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "BackendAddressPool",
+    "ColumnOrdinal": "84",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "CircuitProvisioningState",
+    "ColumnOrdinal": "85",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "ServiceProviderProperties",
+    "ColumnOrdinal": "86",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "ServiceProviderProvisioningState",
+    "ColumnOrdinal": "87",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "SkuDetail",
+    "ColumnOrdinal": "88",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "AzureAsn",
+    "ColumnOrdinal": "89",
+    "ColumnType": "long",
+    "DataType": "System.Int64",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "PeerAsn",
+    "ColumnOrdinal": "90",
+    "ColumnType": "long",
+    "DataType": "System.Int64",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "PeeringType",
+    "ColumnOrdinal": "91",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "PrimaryAzurePort",
+    "ColumnOrdinal": "92",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "PrimaryPeerAddressPrefix",
+    "ColumnOrdinal": "93",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "SecondaryAzurePort",
+    "ColumnOrdinal": "94",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "SecondaryPeerAddressPrefix",
+    "ColumnOrdinal": "95",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "State",
+    "ColumnOrdinal": "96",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "PrimaryBytesIn",
+    "ColumnOrdinal": "97",
+    "ColumnType": "long",
+    "DataType": "System.Int64",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "PrimaryBytesOut",
+    "ColumnOrdinal": "98",
+    "ColumnType": "long",
+    "DataType": "System.Int64",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "SecondaryBytesIn",
+    "ColumnOrdinal": "99",
+    "ColumnType": "long",
+    "DataType": "System.Int64",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "SecondaryBytesOut",
+    "ColumnOrdinal": "100",
+    "ColumnType": "long",
+    "DataType": "System.Int64",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "VlanId",
+    "ColumnOrdinal": "101",
+    "ColumnType": "int",
+    "DataType": "System.Int32",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "Network",
+    "ColumnOrdinal": "102",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "PrimaryNextHop",
+    "ColumnOrdinal": "103",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "SecondaryNextHop",
+    "ColumnOrdinal": "104",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "LocalPreference",
+    "ColumnOrdinal": "105",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "Path",
+    "ColumnOrdinal": "106",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "Weight",
+    "ColumnOrdinal": "107",
+    "ColumnType": "int",
+    "DataType": "System.Int32",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "ComponentType",
+    "ColumnOrdinal": "108",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "Status",
+    "ColumnOrdinal": "109",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "VnetEncryptionSupported",
+    "ColumnOrdinal": "110",
+    "ColumnType": "bool",
+    "DataType": "System.SByte",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "EncryptionEnabled",
+    "ColumnOrdinal": "111",
+    "ColumnType": "bool",
+    "DataType": "System.SByte",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "EncryptionEnforcement",
+    "ColumnOrdinal": "112",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "PrivateEndpointResourceId",
+    "ColumnOrdinal": "113",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "PrivateLinkResourceId",
+    "ColumnOrdinal": "114",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "SourceSystem",
+    "ColumnOrdinal": "115",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  },
+  {
+    "ColumnName": "Type",
+    "ColumnOrdinal": "116",
+    "ColumnType": "string",
+    "DataType": "System.String",
+    "TableName": "getschema"
+  }
+]
