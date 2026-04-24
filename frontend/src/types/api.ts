@@ -82,6 +82,7 @@ export interface FlowRecord {
 
 export interface VMInfo {
   name: string
+  display_name: string
   ip: string
   subnet: string
   vnet: string
@@ -99,11 +100,44 @@ export interface FirewallHit {
   policies: string[]
 }
 
+export interface TimelineBucket {
+  bucket_start: string
+  inbound_bytes: number
+  outbound_bytes: number
+  inbound_packets: number
+  outbound_packets: number
+}
+
+export interface PeerEntry {
+  peer_ip: string
+  peer_vm: string
+  bytes_total: number
+  flow_count: number
+  is_inbound: boolean
+  is_outbound: boolean
+}
+
+export interface HeatmapEntry {
+  hour_of_day: number
+  port: string
+  flow_count: number
+}
+
+export interface DenySummary {
+  count: number
+  top_rules: string[]
+  top_denied_peers: string[]
+}
+
 export interface VMDetailResponse {
   vm: VMInfo
   inbound: FlowRecord[]
   outbound: FlowRecord[]
   firewall_hits: FirewallHit[]
+  timeline: TimelineBucket[]
+  top_peers: PeerEntry[]
+  port_heatmap: HeatmapEntry[]
+  deny_summary: DenySummary
 }
 
 export interface SearchEntry {
@@ -130,4 +164,68 @@ export interface TopologyFilters {
   hours: number
   include_unattributed: boolean
   density_threshold: number
+}
+
+// Dashboard types
+export interface DashboardSummary {
+  active_vms: number
+  total_bytes: number
+  denied_flows: number
+  active_vms_delta: number | null
+  total_bytes_delta: number | null
+  denied_flows_delta: number | null
+}
+
+export interface TopTalker {
+  vm_name: string
+  environment: string
+  bytes_total: number
+  peer_count: number
+  flow_count: number
+}
+
+export interface TopDeniedSource {
+  src_ip: string
+  denied_count: number
+  top_dest: string
+  top_dest_vm: string
+}
+
+export interface FWLeader {
+  rule: string
+  action: string
+  policy: string
+  rule_type: string
+  hit_count: number
+}
+
+export interface ExternalDestination {
+  dest_ip: string
+  bytes_total: number
+  flow_count: number
+}
+
+export interface NewVm {
+  vm_name: string
+  first_seen: string
+}
+
+export interface ThreatHit {
+  ip: string
+  threat_type: string
+  threat_description: string
+  last_seen: string
+  hit_count: number
+}
+
+export interface FlowTimelineBucket {
+  bucket_start: string
+  inbound_bytes: number
+  outbound_bytes: number
+  denied_count: number
+}
+
+export interface ThreatsResponse {
+  items: ThreatHit[]
+  has_threats: boolean
 }

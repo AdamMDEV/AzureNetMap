@@ -9,9 +9,10 @@ interface Props {
   cyRef: React.MutableRefObject<Core | null>
   topology: TopologyResponse | undefined
   onPreset: (preset: 'hub-spoke' | 'denied' | 'high-volume') => void
+  showUnattributed?: boolean
 }
 
-export function LeftSidebar({ topology, onPreset }: Props) {
+export function LeftSidebar({ topology, onPreset, showUnattributed }: Props) {
   const summary = topology?.summary
 
   return (
@@ -55,8 +56,8 @@ export function LeftSidebar({ topology, onPreset }: Props) {
               value={String(summary.deny_count)}
               valueClass={summary.deny_count > 0 ? 'text-red-400' : undefined}
             />
-            {summary.unattributed_count > 0 && (
-              <Stat label="Unattributed" value={String(summary.unattributed_count)} />
+            {showUnattributed && summary.unattributed_count > 0 && (
+              <Stat label="Unattributed" value={String(summary.unattributed_count)} valueClass="text-rose-400 font-mono" />
             )}
           </div>
         ) : (

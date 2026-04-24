@@ -74,25 +74,29 @@ function buildLayout(mode: LayoutMode, hasCompound: boolean) {
   if (mode === 'grid') {
     return { name: 'grid', animate: false, padding: 40 }
   }
-  // fcose (default)
+  // fcose — aggressive tuning to reduce hairball
   return {
     name: 'fcose',
-    animate: false,
+    animate: 'end',
+    animationDuration: 600,
     quality: 'default',
-    randomize: true,
+    randomize: false,
     nodeDimensionsIncludeLabels: true,
     uniformNodeDimensions: false,
     packComponents: true,
     sampleSize: 25,
-    nodeSeparation: hasCompound ? 50 : 75,
-    idealEdgeLength: hasCompound ? 60 : 80,
+    nodeSeparation: 180,
+    idealEdgeLength: 160,
     edgeElasticity: 0.45,
-    nestingFactor: 0.1,
+    nestingFactor: 0.05,
     gravity: 0.25,
+    gravityRangeCompound: 2.5,
+    gravityCompound: 1.5,
+    nodeRepulsion: 10000,
     numIter: 2500,
     tile: true,
-    tilingPaddingVertical: 10,
-    tilingPaddingHorizontal: 10,
+    tilingPaddingVertical: hasCompound ? 60 : 20,
+    tilingPaddingHorizontal: hasCompound ? 60 : 20,
   }
 }
 
@@ -100,22 +104,25 @@ function updateZoomLabels(cy: Core) {
   const z = cy.zoom()
   const leaves = cy.nodes(':childless')
 
-  if (z < 0.6) {
-    leaves.style('label', '')
-    return
-  }
-
-  if (z < 1.2) {
-    const peerCounts = leaves.map((n: cytoscape.NodeSingular) => (n.data('peer_count') as number) || 0)
-    const sorted = [...peerCounts].sort((a, b) => b - a)
-    const threshold80 = sorted[Math.floor(sorted.length * 0.2)] ?? 0
+  if (z < 0.8) {
+    // hide all leaf labels at low zoom — only compound labels remain
     leaves.forEach((n) => {
-      const pc = (n.data('peer_count') as number) || 0
-      n.style('label', pc >= threshold80 ? n.data('label') : '')
+      if (!n.selected()) n.style('label', '')
     })
     return
   }
 
+  if (z < 1.4) {
+    // show labels only for high-connectivity nodes (peer_count >= 5)
+    leaves.forEach((n) => {
+      if (n.selected()) return
+      const pc = (n.data('peer_count') as number) || 0
+      n.style('label', pc >= 5 ? n.data('label') : '')
+    })
+    return
+  }
+
+  // full zoom — show all labels
   leaves.style('label', 'data(label)')
 }
 
@@ -128,6 +135,7 @@ interface Props {
   grouping: GroupingMode
   layout: LayoutMode
   animationsEnabled: boolean
+  focusVm?: string
 }
 
 export function TopologyGraph({
@@ -139,6 +147,7 @@ export function TopologyGraph({
   grouping,
   layout,
   animationsEnabled,
+  focusVm,
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
   const tippyRef = useRef<TippyInstance | null>(null)
@@ -178,6 +187,21 @@ export function TopologyGraph({
     // smart labels on zoom
     updateZoomLabels(cy)
     cy.on('zoom', () => updateZoomLabels(cy))
+
+    // Focus on specific VM from URL param
+    if (focusVm) {
+      const target = cy.nodes().filter((n) => {
+        const d = n.data() as NodeData
+        return d.vm_name === focusVm || d.ip === focusVm
+      })
+      if (target.length > 0) {
+        setTimeout(() => {
+          cy.animate({ fit: { eles: target, padding: 120 } }, { duration: 500 })
+          target.select()
+          onNodeClick(target.first().data() as NodeData)
+        }, 800)
+      }
+    }
 
     // keep selected + hovered labels always visible
     cy.on('select', 'node', (evt) => {

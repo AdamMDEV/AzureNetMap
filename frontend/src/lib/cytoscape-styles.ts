@@ -1,17 +1,17 @@
 import type cytoscape from 'cytoscape'
 
 export const ENV_COLOR: Record<string, string> = {
-  prod: '#3b82f6',
-  dev: '#f59e0b',
-  hub: '#a855f7',
+  prod: '#2563eb',
+  dev: '#ea580c',
+  hub: '#9333ea',
   external: '#64748b',
   unattributed: '#f43f5e',
 }
 
 export const ENV_GLOW: Record<string, string> = {
-  prod: '#60a5fa',
-  dev: '#fbbf24',
-  hub: '#c084fc',
+  prod: '#3b82f6',
+  dev: '#f97316',
+  hub: '#a855f7',
   external: '#94a3b8',
   unattributed: '#fb7185',
 }
@@ -34,8 +34,8 @@ export function logScale(
 export function buildStylesheet(
   maxNodeBytes: number,
   minNodeBytes: number,
-  maxEdgeBytes: number,
-  minEdgeBytes: number,
+  _maxEdgeBytes: number,
+  _minEdgeBytes: number,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): any[] {
   return [
@@ -180,8 +180,9 @@ export function buildStylesheet(
           (ele.data('flow_type') as string) === 'Denied' ? '#ef4444' : '#10b981',
         'target-arrow-shape': 'triangle',
         'arrow-scale': 1.2,
+        // logarithmic width encoding: min 1px, max 12px — clearly visible volume differences
         width: (ele: cytoscape.EdgeSingular) =>
-          logScale(ele.data('bytes_total') as number, minEdgeBytes, maxEdgeBytes, 1.5, 8),
+          Math.max(1, Math.min(12, Math.log10((ele.data('bytes_total') as number) + 1) * 1.5)),
         'curve-style': 'bezier',
         opacity: 0.75,
         'line-style': (ele: cytoscape.EdgeSingular) =>
@@ -199,7 +200,7 @@ export function buildStylesheet(
         'line-color': '#22d3ee',
         'target-arrow-color': '#22d3ee',
         width: (ele: cytoscape.EdgeSingular) =>
-          logScale(ele.data('bytes_total') as number, minEdgeBytes, maxEdgeBytes, 2.5, 12),
+          Math.max(2.5, Math.min(14, Math.log10((ele.data('bytes_total') as number) + 1) * 2)),
       },
     },
     // hovered edge

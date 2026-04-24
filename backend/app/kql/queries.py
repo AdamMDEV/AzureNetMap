@@ -153,6 +153,157 @@ def build_search_query(term: str) -> str:
 | take 50"""
 
 
+def build_vm_timeline_query(
+    vm_name: str,
+    start: datetime,
+    end: datetime,
+    bin_size_minutes: int = 15,
+) -> str:
+    safe = _safe_vm_name(vm_name)
+    return f"""NTANetAnalytics
+| where TimeGenerated between (datetime({_iso(start)}) .. datetime({_iso(end)}))
+| where SrcVm =~ "{safe}" or DestVm =~ "{safe}"
+| extend Direction = iff(SrcVm =~ "{safe}", "Outbound", "Inbound")
+| summarize
+    InboundBytes = sumif(BytesSrcToDest + BytesDestToSrc, Direction == "Inbound"),
+    OutboundBytes = sumif(BytesSrcToDest + BytesDestToSrc, Direction == "Outbound"),
+    InboundPackets = sumif(PacketsSrcToDest + PacketsDestToSrc, Direction == "Inbound"),
+    OutboundPackets = sumif(PacketsSrcToDest + PacketsDestToSrc, Direction == "Outbound")
+    by BucketStart = bin(TimeGenerated, {bin_size_minutes}m)
+| order by BucketStart asc"""
+
+
+def build_vm_top_peers_query(vm_name: str, start: datetime, end: datetime, limit: int = 10) -> str:
+    safe = _safe_vm_name(vm_name)
+    return f"""NTANetAnalytics
+| where TimeGenerated between (datetime({_iso(start)}) .. datetime({_iso(end)}))
+| where SrcVm =~ "{safe}" or DestVm =~ "{safe}"
+| extend
+    PeerIp = iff(SrcVm =~ "{safe}", DestIp, SrcIp),
+    PeerVm = iff(SrcVm =~ "{safe}", tostring(DestVm), tostring(SrcVm)),
+    IsOutbound = SrcVm =~ "{safe}"
+| summarize
+    BytesTotal = sum(BytesSrcToDest + BytesDestToSrc),
+    FlowCount = count(),
+    HasInbound = countif(not IsOutbound) > 0,
+    HasOutbound = countif(IsOutbound) > 0
+    by PeerIp, PeerVm
+| order by BytesTotal desc
+| take {limit}"""
+
+
+def build_vm_port_heatmap_query(vm_name: str, start: datetime, end: datetime) -> str:
+    safe = _safe_vm_name(vm_name)
+    return f"""NTANetAnalytics
+| where TimeGenerated between (datetime({_iso(start)}) .. datetime({_iso(end)}))
+| where SrcVm =~ "{safe}" or DestVm =~ "{safe}"
+| where isnotempty(DestPort)
+| summarize FlowCount = count() by HourOfDay = hourofday(TimeGenerated), Port = tostring(DestPort)
+| order by FlowCount desc
+| take 200"""
+
+
+def build_dashboard_summary_query(start: datetime, end: datetime) -> str:
+    return f"""NTANetAnalytics
+| where TimeGenerated between (datetime({_iso(start)}) .. datetime({_iso(end)}))
+| where isnotempty(SrcVm)
+| summarize
+    BytesTotal = sum(BytesSrcToDest + BytesDestToSrc),
+    DeniedFlows = countif(FlowStatus == "Denied"),
+    FlowCount = count()
+    by VmName = tostring(SrcVm)
+| summarize
+    ActiveVms = dcount(VmName),
+    TotalBytes = sum(BytesTotal),
+    DeniedFlows = sum(DeniedFlows)"""
+
+
+def build_top_talkers_query(start: datetime, end: datetime, limit: int = 10) -> str:
+    return f"""NTANetAnalytics
+| where TimeGenerated between (datetime({_iso(start)}) .. datetime({_iso(end)}))
+| where isnotempty(SrcVm)
+| summarize
+    BytesTotal = sum(BytesSrcToDest + BytesDestToSrc),
+    PeerCount = dcount(DestIp),
+    FlowCount = count()
+    by VmName = tostring(SrcVm), Environment = tostring(SrcEnvironment)
+| order by BytesTotal desc
+| take {limit}"""
+
+
+def build_top_denied_sources_query(start: datetime, end: datetime, limit: int = 10) -> str:
+    return f"""NTANetAnalytics
+| where TimeGenerated between (datetime({_iso(start)}) .. datetime({_iso(end)}))
+| where FlowStatus == "Denied"
+| summarize
+    DeniedCount = count(),
+    TopDest = any(DestIp),
+    TopDestVm = any(tostring(DestVm))
+    by SrcIp
+| order by DeniedCount desc
+| take {limit}"""
+
+
+def build_fw_leaders_query(start: datetime, end: datetime, limit: int = 10) -> str:
+    return f"""union
+  (AZFWNetworkRule
+   | where TimeGenerated between (datetime({_iso(start)}) .. datetime({_iso(end)}))
+   | project Rule, Action, Policy, RuleType = "Network"),
+  (AZFWApplicationRule
+   | where TimeGenerated between (datetime({_iso(start)}) .. datetime({_iso(end)}))
+   | project Rule, Action, Policy, RuleType = "Application")
+| summarize HitCount = count() by Rule, Action, Policy, RuleType
+| order by HitCount desc
+| take {limit}"""
+
+
+def build_external_destinations_query(start: datetime, end: datetime, limit: int = 10) -> str:
+    return f"""NTANetAnalytics
+| where TimeGenerated between (datetime({_iso(start)}) .. datetime({_iso(end)}))
+| where FlowStatus == "Allowed"
+| where isnotempty(DestIp)
+| where not(ipv4_is_private(DestIp))
+| summarize
+    BytesTotal = sum(BytesSrcToDest + BytesDestToSrc),
+    FlowCount = count()
+    by DestIp
+| order by BytesTotal desc
+| take {limit}"""
+
+
+def build_new_vms_query() -> str:
+    return """NTANetAnalytics
+| where TimeGenerated > ago(30d)
+| where isnotempty(SrcVm)
+| summarize FirstSeen = min(TimeGenerated) by VmName = tostring(SrcVm)
+| where FirstSeen > ago(24h)
+| order by FirstSeen desc
+| take 5"""
+
+
+def build_threat_hits_query(start: datetime, end: datetime) -> str:
+    return f"""NTAIpDetails
+| where TimeGenerated between (datetime({_iso(start)}) .. datetime({_iso(end)}))
+| where isnotempty(ThreatType)
+| summarize
+    LastSeen = max(TimeGenerated),
+    HitCount = count()
+    by Ip, ThreatType = tostring(ThreatType), ThreatDescription = tostring(ThreatDescription)
+| order by LastSeen desc
+| take 5"""
+
+
+def build_flow_timeline_query(start: datetime, end: datetime, bin_minutes: int = 15) -> str:
+    return f"""NTANetAnalytics
+| where TimeGenerated between (datetime({_iso(start)}) .. datetime({_iso(end)}))
+| summarize
+    InboundBytes = sumif(BytesSrcToDest, FlowStatus == "Allowed"),
+    OutboundBytes = sumif(BytesDestToSrc, FlowStatus == "Allowed"),
+    DeniedCount = countif(FlowStatus == "Denied")
+    by BucketStart = bin(TimeGenerated, {bin_minutes}m)
+| order by BucketStart asc"""
+
+
 def build_schema_query(table_name: str) -> str:
     safe_table = re.sub(r"[^a-zA-Z0-9]", "", table_name)
     return f"{safe_table} | getschema"

@@ -153,3 +153,73 @@ class TestVMEndpoint:
         assert "inbound" in data
         assert "outbound" in data
         assert "firewall_hits" in data
+        assert "timeline" in data
+        assert "top_peers" in data
+        assert "port_heatmap" in data
+        assert "deny_summary" in data
+
+
+class TestDashboardEndpoints:
+    def test_summary_returns_200(self):
+        with patch("app.routes.dashboard.run_query", return_value=[]):
+            with patch("app.routes.dashboard.get_settings", return_value=_MOCK_SETTINGS):
+                resp = client.get("/api/dashboard/summary")
+        assert resp.status_code == 200
+
+    def test_summary_shape(self):
+        mock_row = [{"ActiveVms": 5, "TotalBytes": 1024000, "DeniedFlows": 2}]
+        with patch("app.routes.dashboard.run_query", return_value=mock_row):
+            with patch("app.routes.dashboard.get_settings", return_value=_MOCK_SETTINGS):
+                data = client.get("/api/dashboard/summary?hours=1").json()
+        assert "active_vms" in data
+        assert "total_bytes" in data
+        assert "denied_flows" in data
+
+    def test_top_talkers_returns_200(self):
+        with patch("app.routes.dashboard.run_query", return_value=[]):
+            with patch("app.routes.dashboard.get_settings", return_value=_MOCK_SETTINGS):
+                resp = client.get("/api/dashboard/top-talkers")
+        assert resp.status_code == 200
+        assert "items" in resp.json()
+
+    def test_top_denied_returns_200(self):
+        with patch("app.routes.dashboard.run_query", return_value=[]):
+            with patch("app.routes.dashboard.get_settings", return_value=_MOCK_SETTINGS):
+                resp = client.get("/api/dashboard/top-denied")
+        assert resp.status_code == 200
+
+    def test_fw_leaders_returns_200(self):
+        with patch("app.routes.dashboard.run_query", return_value=[]):
+            with patch("app.routes.dashboard.get_settings", return_value=_MOCK_SETTINGS):
+                resp = client.get("/api/dashboard/fw-leaders")
+        assert resp.status_code == 200
+
+    def test_external_destinations_returns_200(self):
+        with patch("app.routes.dashboard.run_query", return_value=[]):
+            with patch("app.routes.dashboard.get_settings", return_value=_MOCK_SETTINGS):
+                resp = client.get("/api/dashboard/external-destinations")
+        assert resp.status_code == 200
+
+    def test_new_vms_returns_200(self):
+        with patch("app.routes.dashboard.run_query", return_value=[]):
+            with patch("app.routes.dashboard.get_settings", return_value=_MOCK_SETTINGS):
+                resp = client.get("/api/dashboard/new-vms")
+        assert resp.status_code == 200
+
+    def test_timeline_returns_200(self):
+        with patch("app.routes.dashboard.run_query", return_value=[]):
+            with patch("app.routes.dashboard.get_settings", return_value=_MOCK_SETTINGS):
+                resp = client.get("/api/dashboard/timeline")
+        assert resp.status_code == 200
+
+    def test_threats_returns_200(self):
+        with patch("app.routes.dashboard.run_query", return_value=[]):
+            with patch("app.routes.dashboard.get_settings", return_value=_MOCK_SETTINGS):
+                resp = client.get("/api/dashboard/threats")
+        assert resp.status_code == 200
+
+    def test_threats_has_threats_false_when_empty(self):
+        with patch("app.routes.dashboard.run_query", return_value=[]):
+            with patch("app.routes.dashboard.get_settings", return_value=_MOCK_SETTINGS):
+                data = client.get("/api/dashboard/threats?hours=1").json()
+        assert data["has_threats"] is False

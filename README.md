@@ -100,3 +100,8 @@ If column names differ from queries in `backend/app/kql/queries.py`, adapt there
 
 Logs are written via Docker's json-file driver, stored at `/var/log/azurenetmap/`.
 Rotation: 50 MB × 5 files per container.
+
+## Version history
+
+See [CHANGELOG.md](./CHANGELOG.md) for full version history.
+Current version: **1.2.0**

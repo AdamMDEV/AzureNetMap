@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { Copy, Target, X } from 'lucide-react'
+import { Copy, ExternalLink, Target, X } from 'lucide-react'
 import { fetchVMDetail } from '@/api/client'
 import type { FirewallHit, FlowRecord, NodeData } from '@/types/api'
 import { Badge } from '@/components/ui/badge'
@@ -12,6 +12,7 @@ interface Props {
   node: NodeData
   onClose: () => void
   onFocus: (nodeId: string, label: string) => void
+  onViewDetail?: (vmName: string) => void
 }
 
 type EnvVariant = 'prod' | 'dev' | 'hub' | 'external' | 'allowed' | 'denied' | 'secondary' | 'outline' | 'default' | 'destructive'
@@ -23,7 +24,7 @@ function envVariant(env: string): EnvVariant {
   return 'external'
 }
 
-export function VMDetailPanel({ node, onClose, onFocus }: Props) {
+export function VMDetailPanel({ node, onClose, onFocus, onViewDetail }: Props) {
   const vmName = node.vm_name || node.ip
 
   const { data, isLoading, isError } = useQuery({
@@ -85,6 +86,17 @@ export function VMDetailPanel({ node, onClose, onFocus }: Props) {
             <Target size={10} />
             Focus
           </Button>
+          {onViewDetail && node.vm_name && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-[11px] h-6 px-2 text-slate-400 hover:text-slate-200"
+              onClick={() => onViewDetail(node.vm_name)}
+            >
+              <ExternalLink size={10} />
+              Full detail
+            </Button>
+          )}
         </div>
       </div>
 

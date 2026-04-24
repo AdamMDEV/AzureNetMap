@@ -7,9 +7,10 @@ interface Props {
   visibleEdges: number
   lastRefresh: Date | null
   isLoading: boolean
+  showUnattributed?: boolean
 }
 
-export function StatusBar({ topology, visibleNodes, visibleEdges, lastRefresh, isLoading }: Props) {
+export function StatusBar({ topology, visibleNodes, visibleEdges, lastRefresh, isLoading, showUnattributed }: Props) {
   const total = topology?.summary
 
   return (
@@ -35,6 +36,9 @@ export function StatusBar({ topology, visibleNodes, visibleEdges, lastRefresh, i
             <span>{formatBytes(total.total_bytes)} total</span>
             {total.deny_count > 0 && (
               <span className="text-red-400">{total.deny_count} denied</span>
+            )}
+            {showUnattributed && total.unattributed_count > 0 && (
+              <span className="text-rose-400">{total.unattributed_count} unattributed</span>
             )}
           </>
         )}
