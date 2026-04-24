@@ -1,7 +1,9 @@
-export type Env = 'prod' | 'dev' | 'hub' | 'external'
+export type Env = 'prod' | 'dev' | 'hub' | 'external' | 'unattributed'
 export type FlowType = 'Allowed' | 'Denied' | 'Unknown'
 export type FlowFilter = 'allowed' | 'denied' | 'all'
 export type EnvFilter = 'prod' | 'dev' | 'hub' | 'all'
+export type GroupingMode = 'none' | 'subnet' | 'vnet'
+export type LayoutMode = 'fcose' | 'concentric' | 'breadthfirst' | 'grid'
 
 export interface NodeData {
   id: string
@@ -11,7 +13,9 @@ export interface NodeData {
   vm_name: string
   subnet: string
   vnet: string
+  subscription: string
   bytes_total: number
+  peer_count: number
 }
 
 export interface EdgeData {
@@ -27,9 +31,37 @@ export interface EdgeData {
   protocols: string[]
 }
 
+export interface SubnetGroup {
+  id: string
+  name: string
+  vnet: string
+  env: string
+  node_count: number
+  total_bytes: number
+}
+
+export interface VNetGroup {
+  id: string
+  name: string
+  env: string
+  subnet_count: number
+  node_count: number
+}
+
+export interface TopologySummary {
+  total_bytes: number
+  total_packets: number
+  allow_count: number
+  deny_count: number
+  unattributed_count: number
+}
+
 export interface TopologyResponse {
   nodes: Array<{ data: NodeData }>
   edges: Array<{ data: EdgeData }>
+  subnets: SubnetGroup[]
+  vnets: VNetGroup[]
+  summary: TopologySummary
 }
 
 export interface FlowRecord {
@@ -96,4 +128,6 @@ export interface TopologyFilters {
   env: EnvFilter
   flow_type: FlowFilter
   hours: number
+  include_unattributed: boolean
+  density_threshold: number
 }

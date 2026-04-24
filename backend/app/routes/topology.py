@@ -1,5 +1,7 @@
 import ipaddress
 import logging
+import statistics
+from collections import defaultdict
 from datetime import datetime, timedelta, timezone
 from typing import Any
 
@@ -22,7 +24,10 @@ class NodeData(BaseModel):
     ip: str
     vm_name: str = ""
     subnet: str = ""
+    vnet: str = ""
+    subscription: str = ""
     bytes_total: int = 0
+    peer_count: int = 0
 
 
 class EdgeData(BaseModel):
@@ -38,6 +43,31 @@ class EdgeData(BaseModel):
     protocols: list[str] = []
 
 
+class SubnetGroup(BaseModel):
+    id: str
+    name: str
+    vnet: str
+    env: str
+    node_count: int = 0
+    total_bytes: int = 0
+
+
+class VNetGroup(BaseModel):
+    id: str
+    name: str
+    env: str
+    subnet_count: int = 0
+    node_count: int = 0
+
+
+class Summary(BaseModel):
+    total_bytes: int = 0
+    total_packets: int = 0
+    allow_count: int = 0
+    deny_count: int = 0
+    unattributed_count: int = 0
+
+
 class CyNode(BaseModel):
     data: NodeData
 
@@ -49,6 +79,9 @@ class CyEdge(BaseModel):
 class TopologyResponse(BaseModel):
     nodes: list[CyNode]
     edges: list[CyEdge]
+    subnets: list[SubnetGroup] = []
+    vnets: list[VNetGroup] = []
+    summary: Summary = Summary()
 
 
 def _is_private(ip: str) -> bool:
@@ -59,20 +92,14 @@ def _is_private(ip: str) -> bool:
 
 
 def _classify_env(row_env: str, source_env: str, ip: str) -> str:
-    """
-    Derive display env from:
-    - row_env: SrcEnvironment/DestEnvironment column ("Azure", "OnPrem", "Internet", etc.)
-    - source_env: which LAW workspace the row came from ("prod"/"dev")
-    - ip: IP address (private = Azure/OnPrem, public = external)
-    """
     r = (row_env or "").lower()
     if "hub" in r:
         return "hub"
     if not _is_private(ip):
         return "external"
-    if r == "onprem" or r == "on-prem":
+    if r in ("onprem", "on-prem"):
         return "external"
-    return source_env  # prod or dev from workspace
+    return source_env
 
 
 def _node_id(ip: str) -> str:
@@ -105,16 +132,21 @@ def _build_graph(rows: list[dict], source_env: str) -> tuple[dict[str, dict], di
 
         src_nid = _node_id(src_ip)
         dst_nid = _node_id(dst_ip)
+        src_env = _classify_env(src_env_col, source_env, src_ip)
+        dst_env = _classify_env(dst_env_col, source_env, dst_ip)
 
         if src_nid not in nodes:
             nodes[src_nid] = {
                 "id": src_nid,
                 "label": src_vm if src_vm else src_ip,
-                "env": _classify_env(src_env_col, source_env, src_ip),
+                "env": src_env,
                 "ip": src_ip,
                 "vm_name": src_vm,
                 "subnet": src_subnet,
+                "vnet": src_env,
+                "subscription": source_env,
                 "bytes_total": 0,
+                "peer_count": 0,
             }
         nodes[src_nid]["bytes_total"] += bytes_total
 
@@ -122,11 +154,14 @@ def _build_graph(rows: list[dict], source_env: str) -> tuple[dict[str, dict], di
             nodes[dst_nid] = {
                 "id": dst_nid,
                 "label": dst_vm if dst_vm else dst_ip,
-                "env": _classify_env(dst_env_col, source_env, dst_ip),
+                "env": dst_env,
                 "ip": dst_ip,
                 "vm_name": dst_vm,
                 "subnet": dst_subnet,
+                "vnet": dst_env,
+                "subscription": source_env,
                 "bytes_total": 0,
+                "peer_count": 0,
             }
         nodes[dst_nid]["bytes_total"] += bytes_total
 
@@ -150,6 +185,84 @@ def _build_graph(rows: list[dict], source_env: str) -> tuple[dict[str, dict], di
             }
 
     return nodes, edges
+
+
+def _compute_peer_counts(nodes: dict[str, dict], edges: dict[str, dict]) -> None:
+    adjacency: dict[str, set[str]] = defaultdict(set)
+    for edge in edges.values():
+        src, tgt = edge["source"], edge["target"]
+        adjacency[src].add(tgt)
+        adjacency[tgt].add(src)
+    for nid, node in nodes.items():
+        node["peer_count"] = len(adjacency.get(nid, set()))
+
+
+def _build_groups(nodes: dict[str, dict]) -> tuple[list[dict], list[dict]]:
+    subnet_map: dict[str, dict] = {}
+    vnet_map: dict[str, dict] = {}
+
+    for node in nodes.values():
+        env = node["env"]
+        subnet = node["subnet"]
+
+        vnet_id = f"vnet:{env}"
+        if vnet_id not in vnet_map:
+            vnet_map[vnet_id] = {
+                "id": vnet_id,
+                "name": env,
+                "env": env,
+                "subnet_count": 0,
+                "node_count": 0,
+            }
+        vnet_map[vnet_id]["node_count"] += 1
+
+        if subnet:
+            subnet_id = f"{env}:{subnet}"
+            if subnet_id not in subnet_map:
+                subnet_map[subnet_id] = {
+                    "id": subnet_id,
+                    "name": subnet,
+                    "vnet": vnet_id,
+                    "env": env,
+                    "node_count": 0,
+                    "total_bytes": 0,
+                }
+            subnet_map[subnet_id]["node_count"] += 1
+            subnet_map[subnet_id]["total_bytes"] += node["bytes_total"]
+
+    counted: set[str] = set()
+    for sg in subnet_map.values():
+        vnet_id = sg["vnet"]
+        if vnet_id not in counted and vnet_id in vnet_map:
+            vnet_map[vnet_id]["subnet_count"] += 1
+            counted.add(f"{vnet_id}:{sg['id']}")
+
+    return list(subnet_map.values()), list(vnet_map.values())
+
+
+def _compute_summary(
+    nodes: dict[str, dict], edges: dict[str, dict], unattributed_count: int
+) -> dict:
+    return {
+        "total_bytes": sum(n["bytes_total"] for n in nodes.values()),
+        "total_packets": sum(e["packets_total"] for e in edges.values()),
+        "allow_count": sum(1 for e in edges.values() if e["flow_type"] == "Allowed"),
+        "deny_count": sum(1 for e in edges.values() if e["flow_type"] == "Denied"),
+        "unattributed_count": unattributed_count,
+    }
+
+
+def _apply_density_filter(edges: dict[str, dict], density_threshold: int) -> dict[str, dict]:
+    if density_threshold <= 0 or len(edges) < 2:
+        return edges
+    byte_values = [e["bytes_total"] for e in edges.values()]
+    try:
+        quantile_list = statistics.quantiles(byte_values, n=100)
+        idx = min(density_threshold - 1, len(quantile_list) - 1)
+        byte_threshold = quantile_list[idx]
+        return {k: v for k, v in edges.items() if v["bytes_total"] >= byte_threshold}
+    except statistics.StatisticsError:
+        return edges
 
 
 def _merge(
@@ -177,9 +290,11 @@ async def topology(
     env: str = Query("all", pattern="^(prod|dev|hub|all)$"),
     flow_type: str = Query("all", pattern="^(allowed|denied|all)$"),
     hours: int = Query(24, ge=1, le=720),
+    include_unattributed: bool = Query(False),
+    density_threshold: int = Query(0, ge=0, le=95),
 ) -> TopologyResponse:
     cache = get_cache("topology")
-    cache_key = f"topology:{env}:{flow_type}:{hours}"
+    cache_key = f"topology:{env}:{flow_type}:{hours}:{include_unattributed}:{density_threshold}"
     if cache_key in cache:
         return cache[cache_key]  # type: ignore[return-value]
 
@@ -201,9 +316,29 @@ async def topology(
         n, e = _build_graph(rows, "dev")
         _merge(all_nodes, all_edges, n, e)
 
+    unattributed_count = sum(1 for n in all_nodes.values() if not n.get("vm_name"))
+
+    if not include_unattributed:
+        unattr_ids = {nid for nid, n in all_nodes.items() if not n.get("vm_name")}
+        all_nodes = {k: v for k, v in all_nodes.items() if k not in unattr_ids}
+        all_edges = {
+            k: v
+            for k, v in all_edges.items()
+            if v["source"] not in unattr_ids and v["target"] not in unattr_ids
+        }
+
+    _compute_peer_counts(all_nodes, all_edges)
+    all_edges = _apply_density_filter(all_edges, density_threshold)
+
+    subnets_data, vnets_data = _build_groups(all_nodes)
+    summary_data = _compute_summary(all_nodes, all_edges, unattributed_count)
+
     resp = TopologyResponse(
         nodes=[CyNode(data=NodeData(**v)) for v in all_nodes.values()],
         edges=[CyEdge(data=EdgeData(**v)) for v in all_edges.values()],
+        subnets=[SubnetGroup(**s) for s in subnets_data],
+        vnets=[VNetGroup(**v) for v in vnets_data],
+        summary=Summary(**summary_data),
     )
     cache[cache_key] = resp
     return resp

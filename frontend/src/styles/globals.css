@@ -1,0 +1,131 @@
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/600.css';
+@import '@fontsource/inter/700.css';
+@import '@fontsource/jetbrains-mono/400.css';
+@import '@fontsource/jetbrains-mono/500.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 222 47% 11%;
+    --foreground: 210 40% 95%;
+    --card: 222 47% 13%;
+    --card-foreground: 210 40% 95%;
+    --popover: 222 47% 11%;
+    --popover-foreground: 210 40% 95%;
+    --primary: 187 100% 52%;
+    --primary-foreground: 222 47% 5%;
+    --secondary: 215 28% 17%;
+    --secondary-foreground: 210 40% 85%;
+    --muted: 215 28% 17%;
+    --muted-foreground: 215 20% 55%;
+    --accent: 215 28% 20%;
+    --accent-foreground: 210 40% 90%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 215 28% 17%;
+    --input: 215 28% 17%;
+    --ring: 187 100% 52%;
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+    border-color: hsl(var(--border));
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #0a0e1a;
+    color: #f1f5f9;
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    letter-spacing: -0.01em;
+  }
+
+  ::selection {
+    background: rgba(34, 211, 238, 0.25);
+  }
+}
+
+@layer utilities {
+  .cy-container {
+    width: 100%;
+    height: 100%;
+  }
+
+  .font-mono {
+    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+  }
+
+  .glow-cyan {
+    box-shadow: 0 0 12px rgba(34, 211, 238, 0.3);
+  }
+
+  .glow-prod {
+    box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
+  }
+
+  .glow-dev {
+    box-shadow: 0 0 8px rgba(245, 158, 11, 0.4);
+  }
+
+  .glow-hub {
+    box-shadow: 0 0 8px rgba(168, 85, 247, 0.4);
+  }
+}
+
+/* tippy theme */
+.tippy-box[data-theme~='netmap'] {
+  background-color: #111827;
+  color: #f1f5f9;
+  border: 1px solid #1f2937;
+  font-size: 0.75rem;
+  max-width: 320px;
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  border-radius: 8px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+}
+
+.tippy-box[data-theme~='netmap'][data-placement^='top'] > .tippy-arrow::before {
+  border-top-color: #1f2937;
+}
+
+.tippy-box[data-theme~='netmap'][data-placement^='bottom'] > .tippy-arrow::before {
+  border-bottom-color: #1f2937;
+}
+
+/* scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #1f2937;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #374151;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

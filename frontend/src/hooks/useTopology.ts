@@ -9,6 +9,8 @@ function readFiltersFromUrl(): TopologyFilters {
     env: (p.get('env') as EnvFilter) || 'all',
     flow_type: (p.get('flow_type') as FlowFilter) || 'all',
     hours: Number(p.get('hours')) || 24,
+    include_unattributed: p.get('include_unattributed') === 'true',
+    density_threshold: Number(p.get('density_threshold')) || 0,
   }
 }
 
@@ -17,6 +19,8 @@ function writeFiltersToUrl(filters: TopologyFilters): void {
     env: filters.env,
     flow_type: filters.flow_type,
     hours: String(filters.hours),
+    include_unattributed: String(filters.include_unattributed),
+    density_threshold: String(filters.density_threshold),
   })
   window.history.replaceState(null, '', `?${p}`)
 }

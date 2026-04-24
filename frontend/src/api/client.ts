@@ -1,4 +1,10 @@
-import type { HealthResponse, SearchResponse, TopologyFilters, TopologyResponse, VMDetailResponse } from '../types/api'
+import type {
+  HealthResponse,
+  SearchResponse,
+  TopologyFilters,
+  TopologyResponse,
+  VMDetailResponse,
+} from '../types/api'
 
 const BASE = '/api'
 
@@ -15,6 +21,8 @@ export function fetchTopology(filters: TopologyFilters): Promise<TopologyRespons
     env: filters.env,
     flow_type: filters.flow_type,
     hours: String(filters.hours),
+    include_unattributed: String(filters.include_unattributed),
+    density_threshold: String(filters.density_threshold),
   })
   return apiFetch<TopologyResponse>(`/topology?${p}`)
 }

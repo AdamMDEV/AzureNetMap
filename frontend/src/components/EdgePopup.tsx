@@ -1,14 +1,8 @@
-import type { EdgeData } from '../types/api'
+import type { EdgeData } from '@/types/api'
+import { formatBytes } from '@/lib/utils'
 
 interface Props {
   edge: EdgeData
-}
-
-function formatBytes(b: number): string {
-  if (b >= 1e9) return `${(b / 1e9).toFixed(1)} GB`
-  if (b >= 1e6) return `${(b / 1e6).toFixed(1)} MB`
-  if (b >= 1e3) return `${(b / 1e3).toFixed(1)} KB`
-  return `${b} B`
 }
 
 export function EdgePopup({ edge }: Props) {
@@ -16,10 +10,10 @@ export function EdgePopup({ edge }: Props) {
   const isDenied = edge.flow_type === 'Denied'
 
   return (
-    <div className="text-xs space-y-1.5 p-0.5">
+    <div className="text-xs space-y-2 p-0.5 min-w-[200px]">
       <div className="flex items-center gap-2">
         <span
-          className={`px-1.5 py-0.5 rounded text-xs font-medium ${
+          className={`px-2 py-0.5 rounded text-[11px] font-medium ${
             isAllowed
               ? 'bg-emerald-900/60 text-emerald-300'
               : isDenied
@@ -45,9 +39,11 @@ export function EdgePopup({ edge }: Props) {
 
       {edge.acl_rules.length > 0 && (
         <div>
-          <div className="text-slate-500 mb-0.5">ACL Rules</div>
+          <div className="text-slate-500 mb-0.5 text-[10px] uppercase tracking-wider">ACL Rules</div>
           {edge.acl_rules.slice(0, 4).map((r, i) => (
-            <div key={i} className="text-slate-300 truncate">{r}</div>
+            <div key={i} className="text-slate-300 font-mono text-[10px] truncate">
+              {r}
+            </div>
           ))}
         </div>
       )}
@@ -59,7 +55,7 @@ function Row({ label, value }: { label: string; value: string }) {
   return (
     <>
       <span className="text-slate-500">{label}</span>
-      <span className="text-slate-200">{value}</span>
+      <span className="text-slate-200 font-mono">{value}</span>
     </>
   )
 }
