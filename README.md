@@ -62,7 +62,7 @@ docker compose restart nginx
 
 Edit `nginx/nginx.conf`, replace `netmap.corp.placeholder.local` with your real hostname:
 ```bash
-sed -i 's/netmap.corp.placeholder.local/netmap.corp.ames.local/g' nginx/nginx.conf
+sed -i 's/netmap.corp.placeholder.local/netmap.corp.Corp.local/g' nginx/nginx.conf
 docker compose restart nginx
 ```
 
