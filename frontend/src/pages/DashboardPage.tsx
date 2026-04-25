@@ -1,5 +1,6 @@
+import type { ReactNode } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { Activity, ArrowDown, ArrowUp, Server, Shield } from 'lucide-react'
+import { Activity, ArrowDown, ArrowUp, Clock, Server, Shield, Star } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import CountUp from 'react-countup'
 import {
@@ -31,6 +32,8 @@ import type {
   TopDeniedSource,
   TopTalker,
 } from '@/types/api'
+import { PinnedVMs } from '@/components/PinnedVMs'
+import { RecentVMs } from '@/components/RecentVMs'
 
 const HOURS = 24
 
@@ -94,7 +97,7 @@ function StatCard({
   )
 }
 
-function Card({ title, children, className = '' }: { title: string; children: React.ReactNode; className?: string }) {
+function Card({ title, children, className = '' }: { title: ReactNode; children: ReactNode; className?: string }) {
   return (
     <div className={`bg-[#0d1117] border border-[#1f2937] rounded-xl flex flex-col ${className}`}>
       <div className="px-4 py-3 border-b border-[#1f2937] text-xs font-semibold text-slate-400 uppercase tracking-wider">
@@ -370,6 +373,16 @@ export default function DashboardPage() {
 
         {/* Right 4 cols */}
         <div className="col-span-4 space-y-4">
+          {/* Pinned VMs */}
+          <Card title={<><Star size={11} className="inline mr-1" />Pinned VMs</>}>
+            <PinnedVMs />
+          </Card>
+
+          {/* Recently viewed */}
+          <Card title={<><Clock size={11} className="inline mr-1" />Recently viewed</>}>
+            <RecentVMs />
+          </Card>
+
           <ThreatsCard data={threats.data} isLoading={threats.isLoading} />
           <NewVmsCard data={newVms.data} isLoading={newVms.isLoading} />
           <FWLeadersCard data={fw.data} isLoading={fw.isLoading} />

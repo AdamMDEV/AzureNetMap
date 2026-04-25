@@ -11,19 +11,22 @@ interface Props {
 }
 
 const SHORTCUTS = [
-  { key: '/', desc: 'Focus search' },
-  { key: 'f', desc: 'Fit graph to viewport' },
-  { key: 'Esc', desc: 'Clear selection / exit focus mode' },
-  { key: 'd', desc: 'Toggle deny-only filter' },
-  { key: 'a', desc: 'Toggle allow-only filter' },
-  { key: 'g', desc: 'Cycle grouping (none / subnet / vnet)' },
-  { key: 'm', desc: 'Toggle minimap' },
-  { key: '[', desc: 'Toggle left sidebar' },
-  { key: '+', desc: 'Zoom in' },
-  { key: '-', desc: 'Zoom out' },
+  { key: '/', desc: 'Focus global search' },
   { key: '?', desc: 'Show this dialog' },
-  { key: 'double-click node', desc: 'Enter focus mode' },
-  { key: 'double-click canvas', desc: 'Exit focus mode / fit' },
+  { key: 'g then d', desc: 'Go to Dashboard' },
+  { key: 'g then m', desc: 'Go to Map' },
+  { key: 'g then t', desc: 'Go to Threats' },
+  { key: 'g then r', desc: 'Go to Rules' },
+  { key: 'g then c', desc: 'Go to Changelog' },
+  { key: 'f', desc: 'Fit graph to viewport (map)' },
+  { key: 'Esc', desc: 'Clear selection / exit focus mode' },
+  { key: 'd', desc: 'Toggle deny-only filter (map)' },
+  { key: 'a', desc: 'Toggle allow-only filter (map)' },
+  { key: 'm', desc: 'Toggle minimap (map)' },
+  { key: '[', desc: 'Toggle left sidebar (map)' },
+  { key: '+', desc: 'Zoom in (map)' },
+  { key: '-', desc: 'Zoom out (map)' },
+  { key: 'double-click node', desc: 'Enter focus mode (map)' },
 ]
 
 export function ShortcutDialog({ open, onOpenChange }: Props) {

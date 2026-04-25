@@ -5,6 +5,9 @@ services:
       dockerfile: docker/Dockerfile
     restart: unless-stopped
     env_file: .env
+    volumes:
+      - ./data:/app/data
+      - ./CHANGELOG.md:/app/CHANGELOG.md:ro
     logging:
       driver: json-file
       options:

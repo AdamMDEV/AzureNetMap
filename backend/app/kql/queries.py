@@ -158,12 +158,15 @@ def build_vm_timeline_query(
     start: datetime,
     end: datetime,
     bin_size_minutes: int = 15,
+    use_contains: bool = False,
 ) -> str:
     safe = _safe_vm_name(vm_name)
+    match = f'contains "{safe}"' if use_contains else f'=~ "{safe}"'
+    direction_expr = f'SrcVm contains "{safe}"' if use_contains else f'SrcVm =~ "{safe}"'
     return f"""NTANetAnalytics
 | where TimeGenerated between (datetime({_iso(start)}) .. datetime({_iso(end)}))
-| where SrcVm =~ "{safe}" or DestVm =~ "{safe}"
-| extend Direction = iff(SrcVm =~ "{safe}", "Outbound", "Inbound")
+| where SrcVm {match} or DestVm {match}
+| extend Direction = iff({direction_expr}, "Outbound", "Inbound")
 | summarize
     InboundBytes = sumif(BytesSrcToDest + BytesDestToSrc, Direction == "Inbound"),
     OutboundBytes = sumif(BytesSrcToDest + BytesDestToSrc, Direction == "Outbound"),
@@ -173,15 +176,23 @@ def build_vm_timeline_query(
 | order by BucketStart asc"""
 
 
-def build_vm_top_peers_query(vm_name: str, start: datetime, end: datetime, limit: int = 10) -> str:
+def build_vm_top_peers_query(
+    vm_name: str,
+    start: datetime,
+    end: datetime,
+    limit: int = 10,
+    use_contains: bool = False,
+) -> str:
     safe = _safe_vm_name(vm_name)
+    match = f'contains "{safe}"' if use_contains else f'=~ "{safe}"'
+    direction_expr = f'SrcVm contains "{safe}"' if use_contains else f'SrcVm =~ "{safe}"'
     return f"""NTANetAnalytics
 | where TimeGenerated between (datetime({_iso(start)}) .. datetime({_iso(end)}))
-| where SrcVm =~ "{safe}" or DestVm =~ "{safe}"
+| where SrcVm {match} or DestVm {match}
 | extend
-    PeerIp = iff(SrcVm =~ "{safe}", DestIp, SrcIp),
-    PeerVm = iff(SrcVm =~ "{safe}", tostring(DestVm), tostring(SrcVm)),
-    IsOutbound = SrcVm =~ "{safe}"
+    PeerIp = iff({direction_expr}, DestIp, SrcIp),
+    PeerVm = iff({direction_expr}, tostring(DestVm), tostring(SrcVm)),
+    IsOutbound = ({direction_expr})
 | summarize
     BytesTotal = sum(BytesSrcToDest + BytesDestToSrc),
     FlowCount = count(),
@@ -192,11 +203,17 @@ def build_vm_top_peers_query(vm_name: str, start: datetime, end: datetime, limit
 | take {limit}"""
 
 
-def build_vm_port_heatmap_query(vm_name: str, start: datetime, end: datetime) -> str:
+def build_vm_port_heatmap_query(
+    vm_name: str,
+    start: datetime,
+    end: datetime,
+    use_contains: bool = False,
+) -> str:
     safe = _safe_vm_name(vm_name)
+    match = f'contains "{safe}"' if use_contains else f'=~ "{safe}"'
     return f"""NTANetAnalytics
 | where TimeGenerated between (datetime({_iso(start)}) .. datetime({_iso(end)}))
-| where SrcVm =~ "{safe}" or DestVm =~ "{safe}"
+| where SrcVm {match} or DestVm {match}
 | where isnotempty(DestPort)
 | summarize FlowCount = count() by HourOfDay = hourofday(TimeGenerated), Port = tostring(DestPort)
 | order by FlowCount desc

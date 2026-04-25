@@ -1,17 +1,14 @@
 import { useQueryClient } from '@tanstack/react-query'
 import type { Core } from 'cytoscape'
 import { AlertCircle, PanelLeftClose, PanelLeftOpen, RefreshCw } from 'lucide-react'
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { toast } from 'sonner'
-import type { EdgeData, GroupingMode, LayoutMode, NodeData, SearchEntry } from '@/types/api'
-import { CommandPalette } from '@/components/CommandPalette'
+import type { EdgeData, GroupingMode, LayoutMode, NodeData } from '@/types/api'
 import { ExportButton } from '@/components/ExportButton'
 import { FocusChip } from '@/components/FocusChip'
 import { LeftSidebar } from '@/components/LeftSidebar'
 import { Minimap } from '@/components/Minimap'
-import { SettingsPopover, type AppSettings } from '@/components/SettingsPopover'
-import { ShortcutDialog } from '@/components/ShortcutDialog'
 import { StatusBar } from '@/components/StatusBar'
 import { TopologyGraph } from '@/components/TopologyGraph'
 import { VMDetailPanel } from '@/components/VMDetailPanel'
@@ -20,6 +17,7 @@ import { Button } from '@/components/ui/button'
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
 import { useFocusMode } from '@/hooks/useFocusMode'
 import { useTopology } from '@/hooks/useTopology'
+import type { AppSettings } from '@/components/SettingsPopover'
 
 const GROUPINGS: GroupingMode[] = ['none', 'subnet', 'vnet']
 const GROUPING_LABELS: Record<GroupingMode, string> = { none: 'Flat', subnet: 'Subnet', vnet: 'VNet' }
@@ -31,12 +29,15 @@ const HOUR_OPTIONS = [
   { value: 720, label: '30d' },
 ]
 
-export default function MapPage() {
+interface Props {
+  settings?: AppSettings
+}
+
+export default function MapPage({ settings: externalSettings }: Props) {
   const cyRef = useRef<Core | null>(null)
-  const searchInputRef = useRef<HTMLInputElement>(null)
   const queryClient = useQueryClient()
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams()
 
   const { filters, setFilters, topology, isLoading, isError, error, selectedNode, setSelectedNode, setSelectedEdge } =
     useTopology()
@@ -45,16 +46,19 @@ export default function MapPage() {
   const [layout, setLayout] = useState<LayoutMode>('fcose')
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [minimapOpen, setMinimapOpen] = useState(true)
-  const [shortcutOpen, setShortcutOpen] = useState(false)
-  const [searchOpen, setSearchOpen] = useState(false)
   const [lastRefresh, setLastRefresh] = useState<Date | null>(null)
-  const [settings, setSettings] = useState<AppSettings>({
+
+  const settings: AppSettings = externalSettings ?? {
     animationsEnabled: true,
     showUnattributed: false,
     reducedEffects: false,
-  })
+  }
 
-  const { focusNodeId, focusNodeLabel, enterFocus, exitFocus } = useFocusMode(cyRef)
+  // Focus mode from URL: ?focus=vm-name&depth=1
+  const focusParam = searchParams.get('focus')
+  const depthParam = parseInt(searchParams.get('depth') ?? '1', 10) || 1
+
+  const { focusNodeId, focusNodeLabel, focusDepth, enterFocus, exitFocus, setDepth } = useFocusMode(cyRef)
 
   const handleNodeClick = useCallback(
     (data: NodeData) => {
@@ -73,26 +77,16 @@ export default function MapPage() {
 
   const handleNodeDblClick = useCallback(
     (data: NodeData) => {
-      enterFocus(data.id, data.vm_name || data.ip)
-    },
-    [enterFocus],
-  )
-
-  const handleSearch = useCallback(
-    (entry: SearchEntry) => {
-      if (!cyRef.current) return
-      const cy = cyRef.current
-      const found = cy.nodes().filter((n) => {
-        const d = n.data() as NodeData
-        return d.vm_name === entry.vm_name || d.ip === entry.ip
+      const name = data.vm_name || data.ip
+      enterFocus(data.id, name, 1)
+      setSearchParams((prev) => {
+        const next = new URLSearchParams(prev)
+        next.set('focus', name)
+        next.set('depth', '1')
+        return next
       })
-      if (found.length > 0) {
-        cy.animate({ fit: { eles: found, padding: 80 } }, { duration: 400 })
-        found.select()
-        setSelectedNode(found.first().data() as NodeData)
-      }
     },
-    [setSelectedNode],
+    [enterFocus, setSearchParams],
   )
 
   function handleRefresh() {
@@ -122,12 +116,18 @@ export default function MapPage() {
   const handleEscape = useCallback(() => {
     if (focusNodeId) {
       exitFocus()
+      setSearchParams((prev) => {
+        const next = new URLSearchParams(prev)
+        next.delete('focus')
+        next.delete('depth')
+        return next
+      })
     } else {
       setSelectedNode(null)
       setSelectedEdge(null)
       cyRef.current?.elements().unselect()
     }
-  }, [focusNodeId, exitFocus, setSelectedNode, setSelectedEdge])
+  }, [focusNodeId, exitFocus, setSelectedNode, setSelectedEdge, setSearchParams])
 
   function handleShare() {
     navigator.clipboard.writeText(window.location.href).then(() => {
@@ -137,15 +137,27 @@ export default function MapPage() {
     })
   }
 
+  // Handle focus from URL params (e.g., /map?focus=vm-name&depth=1)
+  useEffect(() => {
+    if (!focusParam || !cyRef.current || focusNodeId) return
+    const cy = cyRef.current
+    const target = cy.nodes().filter((n) => {
+      const d = n.data()
+      return d.vm_name === focusParam || d.ip === focusParam || d.label === focusParam
+    })
+    if (target.length > 0) {
+      enterFocus(target.first().id(), focusParam, depthParam)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [focusParam, depthParam, topology])
+
   useKeyboardShortcuts({
-    onSearch: () => setSearchOpen(true),
     onFit: () => cyRef.current?.fit(undefined, 40),
     onEscape: handleEscape,
     onToggleDeny: () =>
       setFilters({ flow_type: filters.flow_type === 'denied' ? 'all' : 'denied' }),
     onToggleAllow: () =>
       setFilters({ flow_type: filters.flow_type === 'allowed' ? 'all' : 'allowed' }),
-    onCycleGrouping: cycleGrouping,
     onToggleMinimap: () => setMinimapOpen((v) => !v),
     onZoomIn: () => {
       const cy = cyRef.current
@@ -155,7 +167,6 @@ export default function MapPage() {
       const cy = cyRef.current
       if (cy) cy.zoom({ level: cy.zoom() / 1.3, renderedPosition: { x: cy.width() / 2, y: cy.height() / 2 } })
     },
-    onHelp: () => setShortcutOpen(true),
     onToggleSidebar: () => setSidebarOpen((v) => !v),
   })
 
@@ -166,12 +177,9 @@ export default function MapPage() {
     setFilters({ include_unattributed: settings.showUnattributed })
   }
 
-  // Focus on vm from URL param ?vm=name
-  const vmFocusParam = searchParams.get('vm')
-
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
-      {/* Map top bar */}
+      {/* Map filter bar */}
       <div className="flex items-center gap-3 px-4 h-11 border-b border-[#1f2937] shrink-0 bg-[#0d1117]">
         {/* Sidebar toggle */}
         <Button
@@ -179,20 +187,13 @@ export default function MapPage() {
           size="icon"
           onClick={() => setSidebarOpen((v) => !v)}
           title="Toggle sidebar ([)"
+          aria-label="Toggle sidebar"
         >
           {sidebarOpen ? <PanelLeftClose size={14} /> : <PanelLeftOpen size={14} />}
         </Button>
 
-        {/* Search */}
-        <CommandPalette
-          onSelect={handleSearch}
-          open={searchOpen}
-          onOpenChange={setSearchOpen}
-          inputRef={searchInputRef as React.RefObject<HTMLInputElement>}
-        />
-
         {/* Filter chips */}
-        <div className="flex items-center gap-2 ml-2">
+        <div className="flex items-center gap-2">
           {/* Time range */}
           <div className="flex rounded-md overflow-hidden border border-[#374151]">
             {HOUR_OPTIONS.map((o) => (
@@ -248,7 +249,7 @@ export default function MapPage() {
           <button
             onClick={cycleGrouping}
             className="text-xs px-2.5 py-1 rounded-md border border-[#374151] text-slate-400 hover:text-slate-200 hover:border-[#4b5563] transition-colors"
-            title="Cycle grouping (g)"
+            title="Cycle grouping"
           >
             {GROUPING_LABELS[grouping]}
           </button>
@@ -266,14 +267,11 @@ export default function MapPage() {
             size="icon"
             onClick={handleRefresh}
             title="Refresh"
+            aria-label="Refresh topology"
           >
             <RefreshCw size={14} className={isLoading ? 'animate-spin' : ''} />
           </Button>
           <ExportButton cyRef={cyRef} topology={topology} />
-          <SettingsPopover
-            settings={settings}
-            onChange={(s) => setSettings((prev) => ({ ...prev, ...s }))}
-          />
         </div>
       </div>
 
@@ -321,13 +319,32 @@ export default function MapPage() {
             grouping={grouping}
             layout={layout}
             animationsEnabled={settings.animationsEnabled}
-            focusVm={vmFocusParam ?? undefined}
           />
 
           {/* Focus chip */}
           {focusNodeId && (
             <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20">
-              <FocusChip label={focusNodeLabel} onClear={exitFocus} />
+              <FocusChip
+                label={focusNodeLabel}
+                depth={focusDepth}
+                onDepthChange={(d) => {
+                  setDepth(d)
+                  setSearchParams((prev) => {
+                    const next = new URLSearchParams(prev)
+                    next.set('depth', String(d))
+                    return next
+                  })
+                }}
+                onClear={() => {
+                  exitFocus()
+                  setSearchParams((prev) => {
+                    const next = new URLSearchParams(prev)
+                    next.delete('focus')
+                    next.delete('depth')
+                    return next
+                  })
+                }}
+              />
             </div>
           )}
 
@@ -348,7 +365,7 @@ export default function MapPage() {
             node={selectedNode}
             onClose={() => setSelectedNode(null)}
             onFocus={(nodeId, label) => {
-              enterFocus(nodeId, label)
+              enterFocus(nodeId, label, 1)
               setSelectedNode(null)
             }}
             onViewDetail={(name) => navigate(`/vm/${encodeURIComponent(name)}`)}
@@ -365,9 +382,6 @@ export default function MapPage() {
         isLoading={isLoading}
         showUnattributed={settings.showUnattributed}
       />
-
-      {/* Shortcut dialog */}
-      <ShortcutDialog open={shortcutOpen} onOpenChange={setShortcutOpen} />
     </div>
   )
 }

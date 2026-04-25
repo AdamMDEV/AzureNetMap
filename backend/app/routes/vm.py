@@ -1,3 +1,4 @@
+import json
 import logging
 from datetime import datetime, timedelta, timezone
 from typing import Any
@@ -94,6 +95,23 @@ class VMDetailResponse(BaseModel):
     top_peers: list[PeerEntry] = []
     port_heatmap: list[HeatmapEntry] = []
     deny_summary: DenySummary = DenySummary()
+
+
+def _to_list(val: Any) -> list[str]:
+    """Safely convert a KQL make_set result to list[str]. Handles string-encoded JSON arrays."""
+    if isinstance(val, list):
+        return [str(x) for x in val]
+    if isinstance(val, str):
+        val = val.strip()
+        if val.startswith("["):
+            try:
+                parsed = json.loads(val)
+                if isinstance(parsed, list):
+                    return [str(x) for x in parsed]
+            except (json.JSONDecodeError, ValueError):
+                pass
+        return [val] if val else []
+    return []
 
 
 def _resolve_vm_name(raw: str) -> tuple[str, str]:
@@ -223,6 +241,7 @@ async def vm_detail(
         all_rows.extend(run_query(ws_id, query, start, end))
 
     # Fallback: contains search if exact match returned nothing
+    use_contains = False
     if not all_rows:
         logger.info("vm_detail: exact match empty for %r, trying contains fallback", resolved_name)
         from ..kql.queries import _safe_vm_name, _iso
@@ -241,6 +260,7 @@ async def vm_detail(
             all_rows.extend(run_query(ws_id, fallback_query, start, end))
         if all_rows:
             logger.info("vm_detail: contains fallback found %d rows for %r", len(all_rows), resolved_name)
+            use_contains = True
 
     inbound, outbound, all_ips = _parse_flows(all_rows, resolved_name)
 
@@ -268,9 +288,9 @@ async def vm_detail(
                 protocol=str(r.get("Protocol") or ""),
                 rule_type=str(r.get("RuleType") or ""),
                 hit_count=int(r.get("HitCount") or 0),
-                rules=list(r.get("Rules") or []),
-                actions=list(r.get("Actions") or []),
-                policies=list(r.get("Policies") or []),
+                rules=_to_list(r.get("Rules")),
+                actions=_to_list(r.get("Actions")),
+                policies=_to_list(r.get("Policies")),
             )
             for r in fw_rows
         ]
@@ -282,13 +302,13 @@ async def vm_detail(
 
     for ws_id in filter(None, [settings.law_prod_nta_id, settings.law_dev_nta_id]):
         if not timeline:
-            tl_rows = run_query(ws_id, build_vm_timeline_query(resolved_name, start, end), start, end)
+            tl_rows = run_query(ws_id, build_vm_timeline_query(resolved_name, start, end, use_contains=use_contains), start, end)
             timeline = _parse_timeline(tl_rows)
         if not top_peers:
-            peer_rows = run_query(ws_id, build_vm_top_peers_query(resolved_name, start, end), start, end)
+            peer_rows = run_query(ws_id, build_vm_top_peers_query(resolved_name, start, end, use_contains=use_contains), start, end)
             top_peers = _parse_top_peers(peer_rows)
         if not port_heatmap:
-            hm_rows = run_query(ws_id, build_vm_port_heatmap_query(resolved_name, start, end), start, end)
+            hm_rows = run_query(ws_id, build_vm_port_heatmap_query(resolved_name, start, end, use_contains=use_contains), start, end)
             port_heatmap = _parse_port_heatmap(hm_rows)
 
     deny_summary = _build_deny_summary(inbound, outbound)

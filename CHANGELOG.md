@@ -5,6 +5,49 @@ All notable changes to AzureNetMap.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 Adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.3.0] — 2026-04-25
+
+### Added
+- Persistent top navigation bar (Dashboard, Map, Threats, Rules tabs) on every page
+- Rule Planner page at `/rules` — NSG and Firewall rule drafting UI (WIP, deployment not enabled)
+- NSG and Firewall rule form at `/rules/new` and `/rules/:id/edit` with full validation
+- "Add rule" button on VM detail panel and VM page — pre-fills rule form with VM context
+- `POST /api/rules`, `GET /api/rules`, `PUT /api/rules/:id`, `DELETE /api/rules/:id`, `GET /api/rules/export` endpoints
+- Changelog page at `/changelog` rendering `CHANGELOG.md` via `/api/changelog` endpoint
+- Version badge in navigation bar (`v1.3.0`), clickable to changelog
+- "What's new" first-visit toast on version change with dismiss and changelog link
+- Keyboard navigation shortcuts: `g d` dashboard, `g m` map, `g t` threats, `g r` rules, `g c` changelog
+- Visual hint `g…` while waiting for second key in navigation shortcut
+- Pinned VMs section on dashboard (star icon on VM pages, localStorage)
+- Recently viewed VMs section on dashboard (auto-recorded, localStorage)
+- "Copy as Markdown" button on VM pages for quick ticket/incident documentation
+- "Frequent peers" section on VM overview tab (top VM-to-VM peers by flow count)
+- Page transitions via framer-motion (`opacity + y:4`, 150ms, respects `prefers-reduced-motion`)
+- Loading progress bar (NProgress, cyan) during lazy route loading
+- Azure CLI export dialog on Rule Planner page with copy + download
+- `data/` directory and `data/*.json` gitignore for rule draft persistence
+- File-locking (`fcntl`) on rule draft JSON store to prevent concurrent write corruption
+- 15 new backend tests (rules CRUD, `_to_list`, changelog endpoint)
+- Focus mode depth selector (1 / 2 / 3 hops) in FocusChip
+
+### Changed
+- Focus mode: now isolates subgraph (hides non-neighbors via CSS `display: none`), uses concentric layout with focused VM at center, animated 500ms transition
+- "View on map" from VM page routes to `/map?focus=<vm>&depth=1` (direct focus mode entry)
+- Map filter chips moved to dedicated filter bar below primary nav
+- MapPage no longer has its own command palette — global search in TopNav used everywhere
+- `g` key map shortcut removed (was cycling grouping); grouping still accessible via toolbar chip
+- Keyboard shortcuts `onSearch` and `onHelp` lifted to global level (TopNav/App)
+- Empty state messages refreshed with icons and friendlier copy
+- `ShortcutDialog` updated with all new v1.3 shortcuts
+
+### Fixed
+- Firewall hits `rules` field rendering as character array when KQL `make_set` returned JSON-encoded string — `_to_list()` helper now safely decodes both `list` and `str` forms
+- VM overview timeline / top peers / port heatmap returning empty when VM was found via contains-fallback but extended queries used exact `=~` match — `use_contains` flag now propagates to all three queries
+- Duplicate command palette on Map page removed (global TopBar palette used instead)
+
+### Removed
+- Scattered "Open Map" and "Threats" buttons in TopBar (replaced by persistent primary nav tabs)
+
 ## [1.2.0] — 2026-04-24
 
 ### Added

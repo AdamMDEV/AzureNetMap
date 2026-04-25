@@ -1,5 +1,6 @@
+import { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { Copy, Map, RefreshCw } from 'lucide-react'
+import { ClipboardCopy, FileCode, Map, Plus, RefreshCw, Star } from 'lucide-react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'sonner'
 import {
@@ -16,20 +17,18 @@ import {
 } from 'recharts'
 import { fetchVMDetail } from '@/api/client'
 import { formatBytes } from '@/lib/utils'
+import { vmToMarkdown } from '@/lib/markdown-export'
+import { usePinnedVMs } from '@/hooks/usePinnedVMs'
+import { useRecentVMs } from '@/hooks/useRecentVMs'
 import type { FirewallHit, FlowRecord, HeatmapEntry, PeerEntry, TimelineBucket } from '@/types/api'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Dialog, DialogContent } from '@/components/ui/dialog'
 
-function copy(text: string) {
-  navigator.clipboard.writeText(text).then(() => toast.success('Copied')).catch(() => {})
-}
-
-function EnvBadge({ env }: { env: string }) {
-  const variant =
-    env === 'prod' ? 'prod' : env === 'dev' ? 'dev' : env === 'hub' ? 'hub' : 'external'
-  return <Badge variant={variant as 'prod' | 'dev' | 'hub' | 'external'}>{env}</Badge>
+function copy(text: string, label = 'Copied') {
+  navigator.clipboard.writeText(text).then(() => toast.success(label)).catch(() => {})
 }
 
 function StatTile({ label, value, accent }: { label: string; value: string; accent?: string }) {
@@ -42,7 +41,12 @@ function StatTile({ label, value, accent }: { label: string; value: string; acce
 }
 
 function TimelineChart({ items }: { items: TimelineBucket[] }) {
-  if (!items.length) return <div className="text-xs text-slate-600 text-center py-8">No timeline data</div>
+  if (!items.length) return (
+    <div className="flex flex-col items-center justify-center h-44 gap-2 text-slate-600">
+      <RefreshCw size={20} />
+      <span className="text-xs">No timeline data — quiet period or time range too short</span>
+    </div>
+  )
 
   const data = items.map(b => ({
     time: new Date(b.bucket_start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
@@ -77,7 +81,12 @@ function TimelineChart({ items }: { items: TimelineBucket[] }) {
 }
 
 function PeersChart({ items }: { items: PeerEntry[] }) {
-  if (!items.length) return <div className="text-xs text-slate-600 text-center py-8">No peer data</div>
+  if (!items.length) return (
+    <div className="flex flex-col items-center justify-center h-44 gap-2 text-slate-600">
+      <RefreshCw size={20} />
+      <span className="text-xs">No peer data</span>
+    </div>
+  )
 
   const data = items.map(p => ({
     name: p.peer_vm || p.peer_ip,
@@ -104,9 +113,13 @@ function PeersChart({ items }: { items: PeerEntry[] }) {
 }
 
 function HeatmapWidget({ items }: { items: HeatmapEntry[] }) {
-  if (!items.length) return <div className="text-xs text-slate-600 text-center py-8">No port data</div>
+  if (!items.length) return (
+    <div className="flex flex-col items-center justify-center py-8 gap-2 text-slate-600">
+      <RefreshCw size={20} />
+      <span className="text-xs">No port data</span>
+    </div>
+  )
 
-  // Get top 20 ports
   const portMap: Record<string, number[]> = {}
   for (const e of items) {
     if (!portMap[e.port]) portMap[e.port] = new Array(24).fill(0)
@@ -154,7 +167,12 @@ function HeatmapWidget({ items }: { items: HeatmapEntry[] }) {
 }
 
 function FlowTable({ flows }: { flows: FlowRecord[] }) {
-  if (!flows.length) return <div className="text-xs text-slate-600 text-center py-8">No flows</div>
+  if (!flows.length) return (
+    <div className="flex flex-col items-center justify-center py-12 gap-2 text-slate-600">
+      <RefreshCw size={20} />
+      <span className="text-xs">No flows in range. Try 24h?</span>
+    </div>
+  )
 
   return (
     <div className="space-y-1.5">
@@ -181,7 +199,12 @@ function FlowTable({ flows }: { flows: FlowRecord[] }) {
 }
 
 function FirewallTable({ hits }: { hits: FirewallHit[] }) {
-  if (!hits.length) return <div className="text-xs text-slate-600 text-center py-8">No firewall hits</div>
+  if (!hits.length) return (
+    <div className="flex flex-col items-center justify-center py-12 gap-2 text-slate-600">
+      <RefreshCw size={20} />
+      <span className="text-xs">No firewall hits</span>
+    </div>
+  )
 
   return (
     <div className="space-y-1.5">
@@ -194,10 +217,112 @@ function FirewallTable({ hits }: { hits: FirewallHit[] }) {
             <span className="text-slate-500 shrink-0">{h.hit_count} hits</span>
           </div>
           <div className="text-slate-500">{h.rule_type} · {h.protocol}{h.actions.length > 0 ? ` · ${h.actions.join('/')}` : ''}</div>
-          {h.rules.length > 0 && <div className="text-slate-600 font-mono truncate">{h.rules.slice(0, 2).join(', ')}</div>}
+          {h.rules.length > 0 && (
+            <div className="flex flex-wrap gap-1">
+              {h.rules.slice(0, 3).map((r) => (
+                <span key={r} className="px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-mono text-[10px]">{r}</span>
+              ))}
+            </div>
+          )}
         </div>
       ))}
     </div>
+  )
+}
+
+function FrequentPeers({ peers, navigate }: { peers: PeerEntry[]; navigate: ReturnType<typeof useNavigate> }) {
+  const vmPeers = peers.filter((p) => p.peer_vm).slice(0, 5)
+  if (!vmPeers.length) return null
+
+  return (
+    <div className="bg-[#0d1117] border border-[#1f2937] rounded-xl p-4">
+      <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Frequent peers</div>
+      <div className="space-y-1.5">
+        {vmPeers.map((p) => (
+          <button
+            key={p.peer_vm}
+            onClick={() => navigate(`/vm/${encodeURIComponent(p.peer_vm)}`)}
+            className="w-full flex items-center justify-between text-xs p-2 rounded-lg hover:bg-[#111827] transition-colors text-left"
+          >
+            <span className="font-mono text-cyan-400 hover:text-cyan-300 truncate">{p.peer_vm}</span>
+            <span className="text-slate-600 shrink-0 ml-2">{formatBytes(p.bytes_total)}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function AddRuleDialog({ vmName, open, onClose, navigate }: {
+  vmName: string
+  open: boolean
+  onClose: () => void
+  navigate: ReturnType<typeof useNavigate>
+}) {
+  const [direction, setDirection] = useState<'source' | 'destination' | 'either'>('destination')
+  const [ruleType, setRuleType] = useState<'nsg' | 'firewall'>('nsg')
+
+  function handleContinue() {
+    onClose()
+    const params = new URLSearchParams({
+      vm: vmName,
+      direction,
+      type: ruleType,
+    })
+    navigate(`/rules/new?${params}`)
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogContent className="bg-[#0d1117] border-[#1f2937] max-w-sm">
+        <div className="space-y-4">
+          <h3 className="text-sm font-semibold text-slate-200">Add rule for {vmName}</h3>
+
+          <div className="space-y-2">
+            <div className="text-xs text-slate-500">This VM is the:</div>
+            {(['source', 'destination', 'either'] as const).map((d) => (
+              <label key={d} className="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
+                <input
+                  type="radio"
+                  value={d}
+                  checked={direction === d}
+                  onChange={() => setDirection(d)}
+                  className="accent-cyan-400"
+                />
+                {d === 'source' ? 'Source (outbound traffic from this VM)' :
+                  d === 'destination' ? 'Destination (inbound traffic to this VM)' :
+                    'Either (fill in later)'}
+              </label>
+            ))}
+          </div>
+
+          <div className="space-y-2">
+            <div className="text-xs text-slate-500">Rule type:</div>
+            {(['nsg', 'firewall'] as const).map((t) => (
+              <label key={t} className="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
+                <input
+                  type="radio"
+                  value={t}
+                  checked={ruleType === t}
+                  onChange={() => setRuleType(t)}
+                  className="accent-cyan-400"
+                />
+                {t === 'nsg' ? 'NSG rule' : 'Firewall rule'}
+              </label>
+            ))}
+          </div>
+
+          <div className="flex gap-2 pt-1">
+            <Button size="sm" onClick={handleContinue} className="flex-1 text-xs bg-cyan-500/10 border border-cyan-400/30 text-cyan-300 hover:bg-cyan-500/20">
+              Continue
+            </Button>
+            <Button size="sm" variant="ghost" onClick={onClose} className="text-xs text-slate-500">
+              Cancel
+            </Button>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
   )
 }
 
@@ -206,11 +331,20 @@ export default function VMPage() {
   const navigate = useNavigate()
   const vmName = name ? decodeURIComponent(name) : ''
 
+  const { isPinned, toggle } = usePinnedVMs()
+  const { record } = useRecentVMs()
+  const [addRuleOpen, setAddRuleOpen] = useState(false)
+
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ['vm', vmName],
     queryFn: () => fetchVMDetail(vmName),
     enabled: !!vmName,
   })
+
+  // Record this VM as recently viewed
+  useEffect(() => {
+    if (vmName) record(vmName)
+  }, [vmName, record])
 
   if (!vmName) return <div className="p-8 text-slate-500">No VM specified</div>
 
@@ -227,6 +361,14 @@ export default function VMPage() {
     ? ((denied.length / (inbound.length + outbound.length)) * 100).toFixed(1)
     : '0'
 
+  const pinned = isPinned(vmName)
+
+  function handleCopyMarkdown() {
+    if (!data) return
+    const md = vmToMarkdown(vmName, data)
+    navigator.clipboard.writeText(md).then(() => toast.success('Copied markdown summary')).catch(() => {})
+  }
+
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
       {/* Header */}
@@ -239,24 +381,52 @@ export default function VMPage() {
             {vm && (
               <div className="flex items-center gap-2 mt-1 flex-wrap">
                 <span className="font-mono text-xs text-slate-400">{vm.ip}</span>
-                <EnvBadge env={(data?.inbound[0]?.src_vm === vm.name ? 'prod' : 'dev')} />
                 {vm.subnet && <Badge variant="outline" className="font-mono text-[10px]">{vm.subnet}</Badge>}
               </div>
             )}
           </div>
-          <div className="flex items-center gap-2 shrink-0">
-            <Button variant="ghost" size="sm" className="text-xs" onClick={() => navigate(`/map?vm=${encodeURIComponent(vmName)}`)}>
+          <div className="flex items-center gap-1.5 shrink-0 flex-wrap justify-end">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-xs"
+              onClick={() => navigate(`/map?focus=${encodeURIComponent(vmName)}&depth=1`)}
+              aria-label="View on map"
+            >
               <Map size={12} /> View on map
             </Button>
             {vm?.ip && (
-              <Button variant="ghost" size="sm" className="text-xs" onClick={() => copy(vm.ip)}>
-                <Copy size={12} /> Copy IP
+              <Button variant="ghost" size="sm" className="text-xs" onClick={() => copy(vm.ip, 'IP copied')}>
+                <ClipboardCopy size={12} /> Copy IP
               </Button>
             )}
-            <Button variant="ghost" size="sm" className="text-xs" onClick={() => copy(vmName)}>
-              <Copy size={12} /> Copy name
+            <Button variant="ghost" size="sm" className="text-xs" onClick={() => copy(vmName, 'Name copied')}>
+              <ClipboardCopy size={12} /> Copy name
             </Button>
-            <Button variant="ghost" size="icon" onClick={() => refetch()}>
+            {data && (
+              <Button variant="ghost" size="sm" className="text-xs" onClick={handleCopyMarkdown}>
+                <FileCode size={12} /> Copy as MD
+              </Button>
+            )}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-xs"
+              onClick={() => setAddRuleOpen(true)}
+              title="Add NSG or firewall rule for this VM"
+            >
+              <Plus size={12} /> Add rule
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => toggle(vmName)}
+              aria-label={pinned ? 'Unpin VM' : 'Pin VM'}
+              title={pinned ? 'Unpin' : 'Pin to dashboard'}
+            >
+              <Star size={14} className={pinned ? 'text-amber-400 fill-amber-400' : 'text-slate-600'} />
+            </Button>
+            <Button variant="ghost" size="icon" onClick={() => refetch()} aria-label="Refresh">
               <RefreshCw size={14} className={isLoading ? 'animate-spin' : ''} />
             </Button>
           </div>
@@ -271,6 +441,7 @@ export default function VMPage() {
 
       {isLoading && (
         <div className="flex-1 flex items-center justify-center text-slate-500 text-sm">
+          <div className="w-4 h-4 rounded-full border-2 border-cyan-400 border-t-transparent animate-spin mr-2" />
           Loading VM details...
         </div>
       )}
@@ -307,10 +478,13 @@ export default function VMPage() {
               </div>
 
               {/* Port heatmap */}
-              <div className="bg-[#0d1117] border border-[#1f2937] rounded-xl p-4">
+              <div className="bg-[#0d1117] border border-[#1f2937] rounded-xl p-4 mb-4">
                 <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Port Usage Heatmap (hour of day)</div>
                 <HeatmapWidget items={data?.port_heatmap ?? []} />
               </div>
+
+              {/* Frequent peers */}
+              {data && <FrequentPeers peers={data.top_peers} navigate={navigate} />}
             </TabsContent>
 
             <TabsContent value="inbound" className="px-6 py-4 mt-0">
@@ -342,6 +516,13 @@ export default function VMPage() {
           </ScrollArea>
         </Tabs>
       )}
+
+      <AddRuleDialog
+        vmName={vmName}
+        open={addRuleOpen}
+        onClose={() => setAddRuleOpen(false)}
+        navigate={navigate}
+      />
     </div>
   )
 }

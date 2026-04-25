@@ -8,7 +8,7 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
 from .config import get_settings
-from .routes import dashboard, health, search, topology, vm
+from .routes import changelog, dashboard, health, rules, search, topology, vm
 
 FRONTEND_DIST = Path("/app/frontend_dist")
 
@@ -37,6 +37,8 @@ app.include_router(topology.router, prefix="/api")
 app.include_router(vm.router, prefix="/api")
 app.include_router(search.router, prefix="/api")
 app.include_router(dashboard.router, prefix="/api")
+app.include_router(changelog.router, prefix="/api")
+app.include_router(rules.router, prefix="/api")
 
 if FRONTEND_DIST.exists():
     assets = FRONTEND_DIST / "assets"

@@ -1,16 +1,13 @@
 import { useEffect } from 'react'
 
 interface Handlers {
-  onSearch?: () => void
   onFit?: () => void
   onEscape?: () => void
   onToggleDeny?: () => void
   onToggleAllow?: () => void
-  onCycleGrouping?: () => void
   onToggleMinimap?: () => void
   onZoomIn?: () => void
   onZoomOut?: () => void
-  onHelp?: () => void
   onToggleSidebar?: () => void
 }
 
@@ -35,10 +32,6 @@ export function useKeyboardShortcuts(handlers: Handlers) {
       if (e.metaKey || e.ctrlKey || e.altKey) return
 
       switch (e.key) {
-        case '/':
-          e.preventDefault()
-          handlers.onSearch?.()
-          break
         case 'f':
           handlers.onFit?.()
           break
@@ -51,9 +44,6 @@ export function useKeyboardShortcuts(handlers: Handlers) {
         case 'a':
           handlers.onToggleAllow?.()
           break
-        case 'g':
-          handlers.onCycleGrouping?.()
-          break
         case 'm':
           handlers.onToggleMinimap?.()
           break
@@ -63,9 +53,6 @@ export function useKeyboardShortcuts(handlers: Handlers) {
           break
         case '-':
           handlers.onZoomOut?.()
-          break
-        case '?':
-          handlers.onHelp?.()
           break
         case '[':
           handlers.onToggleSidebar?.()

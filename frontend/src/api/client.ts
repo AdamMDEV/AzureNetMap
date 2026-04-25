@@ -2,9 +2,12 @@ import type {
   DashboardSummary,
   ExternalDestination,
   FWLeader,
+  FirewallRule,
   FlowTimelineBucket,
   HealthResponse,
+  NSGRule,
   NewVm,
+  RuleModel,
   SearchResponse,
   ThreatsResponse,
   TopDeniedSource,
@@ -84,4 +87,42 @@ export function fetchDashboardTimeline(hours = 24): Promise<{ items: FlowTimelin
 
 export function fetchThreats(hours = 24): Promise<ThreatsResponse> {
   return apiFetch<ThreatsResponse>(`/dashboard/threats${dashHours(hours)}`)
+}
+
+// Rules
+export function fetchRules(): Promise<{ items: RuleModel[] }> {
+  return apiFetch<{ items: RuleModel[] }>('/rules')
+}
+
+export function fetchRule(id: string): Promise<RuleModel> {
+  return apiFetch<RuleModel>(`/rules/${id}`)
+}
+
+export async function createRule(rule: Omit<NSGRule, 'id' | 'created_at' | 'updated_at' | 'status'> | Omit<FirewallRule, 'id' | 'created_at' | 'updated_at' | 'status'>): Promise<RuleModel> {
+  const res = await fetch(`${BASE}/rules`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(rule),
+  })
+  if (!res.ok) throw new Error(`API ${res.status}: /rules`)
+  return res.json()
+}
+
+export async function updateRule(id: string, rule: RuleModel): Promise<RuleModel> {
+  const res = await fetch(`${BASE}/rules/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(rule),
+  })
+  if (!res.ok) throw new Error(`API ${res.status}: /rules/${id}`)
+  return res.json()
+}
+
+export async function deleteRule(id: string): Promise<void> {
+  const res = await fetch(`${BASE}/rules/${id}`, { method: 'DELETE' })
+  if (!res.ok && res.status !== 204) throw new Error(`API ${res.status}: /rules/${id}`)
+}
+
+export function fetchRulesExport(format: 'cli' | 'json' = 'cli'): Promise<string> {
+  return fetch(`${BASE}/rules/export?format=${format}`).then((r) => r.text())
 }

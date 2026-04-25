@@ -229,3 +229,43 @@ export interface ThreatsResponse {
   items: ThreatHit[]
   has_threats: boolean
 }
+
+// Rule Planner types
+export interface NSGRule {
+  id: string
+  type: 'nsg'
+  name: string
+  priority: number
+  direction: 'Inbound' | 'Outbound'
+  source: string
+  destination: string
+  port: string
+  protocol: 'TCP' | 'UDP' | 'Any'
+  action: 'Allow' | 'Deny'
+  nsg_name: string
+  status: 'Draft'
+  created_at: string
+  updated_at: string
+}
+
+export interface FirewallRule {
+  id: string
+  type: 'firewall'
+  name: string
+  rule_type: 'Network' | 'Application' | 'NAT'
+  rule_collection: string
+  rule_collection_group: string
+  priority: number
+  action: 'Allow' | 'Deny'
+  source_ips: string
+  destination: string
+  port: string
+  protocol: 'TCP' | 'UDP' | 'Any' | 'HTTP' | 'HTTPS'
+  translated_address: string
+  translated_port: string
+  status: 'Draft'
+  created_at: string
+  updated_at: string
+}
+
+export type RuleModel = NSGRule | FirewallRule

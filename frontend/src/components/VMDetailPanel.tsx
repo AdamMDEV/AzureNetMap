@@ -1,11 +1,14 @@
+import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { Copy, ExternalLink, Target, X } from 'lucide-react'
+import { Copy, ExternalLink, Plus, Target, X } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import { fetchVMDetail } from '@/api/client'
 import type { FirewallHit, FlowRecord, NodeData } from '@/types/api'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Dialog, DialogContent } from '@/components/ui/dialog'
 import { formatBytes } from '@/lib/utils'
 
 interface Props {
@@ -26,6 +29,10 @@ function envVariant(env: string): EnvVariant {
 
 export function VMDetailPanel({ node, onClose, onFocus, onViewDetail }: Props) {
   const vmName = node.vm_name || node.ip
+  const navigate = useNavigate()
+  const [addRuleOpen, setAddRuleOpen] = useState(false)
+  const [ruleDirection, setRuleDirection] = useState<'source' | 'destination' | 'either'>('destination')
+  const [ruleType, setRuleType] = useState<'nsg' | 'firewall'>('nsg')
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['vm', vmName],
@@ -97,6 +104,16 @@ export function VMDetailPanel({ node, onClose, onFocus, onViewDetail }: Props) {
               Full detail
             </Button>
           )}
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-[11px] h-6 px-2 text-slate-400 hover:text-slate-200"
+            onClick={() => setAddRuleOpen(true)}
+            title="Add NSG or firewall rule"
+          >
+            <Plus size={10} />
+            Add rule
+          </Button>
         </div>
       </div>
 
@@ -139,6 +156,47 @@ export function VMDetailPanel({ node, onClose, onFocus, onViewDetail }: Props) {
           )}
         </ScrollArea>
       </Tabs>
+      {/* Add Rule mini-dialog */}
+      <Dialog open={addRuleOpen} onOpenChange={setAddRuleOpen}>
+        <DialogContent className="bg-[#0d1117] border-[#1f2937] max-w-xs">
+          <div className="space-y-3">
+            <h3 className="text-xs font-semibold text-slate-200">Add rule for {vmName}</h3>
+            <div className="space-y-1.5">
+              <div className="text-[11px] text-slate-500">This VM is the:</div>
+              {(['source', 'destination', 'either'] as const).map((d) => (
+                <label key={d} className="flex items-center gap-2 text-[11px] text-slate-300 cursor-pointer">
+                  <input type="radio" value={d} checked={ruleDirection === d} onChange={() => setRuleDirection(d)} className="accent-cyan-400" />
+                  {d === 'source' ? 'Source' : d === 'destination' ? 'Destination' : 'Either'}
+                </label>
+              ))}
+            </div>
+            <div className="space-y-1.5">
+              <div className="text-[11px] text-slate-500">Rule type:</div>
+              {(['nsg', 'firewall'] as const).map((t) => (
+                <label key={t} className="flex items-center gap-2 text-[11px] text-slate-300 cursor-pointer">
+                  <input type="radio" value={t} checked={ruleType === t} onChange={() => setRuleType(t)} className="accent-cyan-400" />
+                  {t === 'nsg' ? 'NSG rule' : 'Firewall rule'}
+                </label>
+              ))}
+            </div>
+            <div className="flex gap-2 pt-1">
+              <Button
+                size="sm"
+                className="flex-1 text-[11px] bg-cyan-500/10 border border-cyan-400/30 text-cyan-300 hover:bg-cyan-500/20"
+                onClick={() => {
+                  setAddRuleOpen(false)
+                  navigate(`/rules/new?vm=${encodeURIComponent(vmName)}&direction=${ruleDirection}&type=${ruleType}`)
+                }}
+              >
+                Continue
+              </Button>
+              <Button size="sm" variant="ghost" className="text-[11px] text-slate-500" onClick={() => setAddRuleOpen(false)}>
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
@@ -242,7 +300,11 @@ function FirewallTable({ hits }: { hits: FirewallHit[] }) {
             {h.actions.length > 0 ? ` · ${h.actions.join('/')}` : ''}
           </div>
           {h.rules.length > 0 && (
-            <div className="text-slate-600 font-mono truncate">{h.rules.slice(0, 2).join(', ')}</div>
+            <div className="flex flex-wrap gap-1">
+              {h.rules.slice(0, 3).map((r) => (
+                <span key={r} className="px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-mono text-[10px]">{r}</span>
+              ))}
+            </div>
           )}
         </div>
       ))}
